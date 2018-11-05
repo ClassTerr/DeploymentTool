@@ -24,14 +24,15 @@ namespace DeploymentTool
             return Profiles?.FirstOrDefault(profile => profile.ID == Id);
         }
 
-        public void UpdateProfile(Profile profile)
+        public bool UpdateProfile(Profile profile)
         {
             var index = Profiles.FindIndex(x => x.ID == profile.ID);
-            if (index == -1)
+            if (index != -1)
             {
-                throw new EntryPointNotFoundException("There is no such profile");
+                Profiles[index] = profile;
             }
-            Profiles[index] = profile;
+
+            return index != -1;
         }
 
         public void RemoveProfile(Profile profile)
@@ -56,7 +57,7 @@ namespace DeploymentTool
         public string Name { get; set; }
         public List<string> IncludedPaths { get; set; }
         public List<string> ExcludedPaths { get; set; }
-        public string UpadateAPIURL { get; set; }
+        public string APICommand { get; set; }
         public string UpadateAPISSH { get; set; }
 
         public override string ToString()

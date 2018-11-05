@@ -40,7 +40,55 @@ namespace DeploymentTool
                 if (comboBoxProfiles.Items.Count > 0)
                     comboBoxProfiles.SelectedIndex = 0;
             }
+
+            if (prevSelectedID == null)
+            {
+                CurrentProfile = null;
+            }
         }
+
+
+        private Profile CurrentProfile
+        {
+            get
+            {
+                try
+                {
+                    return new Profile()
+                    {
+                        ID = Guid.Parse(textBoxId.Text),
+                        Name = textBoxName.Text,
+                        APICommand = textBoxAPICommand.Text,
+                        ExcludedPaths = textBoxExcludedPaths.Text.Split('\n').ToList(),
+                        IncludedPaths = textBoxIncludedPaths.Text.Split('\n').ToList()
+                    };
+
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+            set
+            {
+
+                if (value == null)
+                {
+                    textBoxId.Text =
+                    textBoxName.Text =
+                    textBoxAPICommand.Text =
+                    textBoxExcludedPaths.Text =
+                    textBoxIncludedPaths.Text = "";
+                }
+
+                textBoxId.Text = value?.ID.ToString();
+                textBoxName.Text = value?.Name;
+                textBoxAPICommand.Text = value?.APICommand;
+                textBoxExcludedPaths.Text = String.Join("\n", value?.ExcludedPaths ?? new List<string>());
+                textBoxIncludedPaths.Text = String.Join("\n", value?.IncludedPaths ?? new List<string>());
+            }
+        }
+
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -48,19 +96,17 @@ namespace DeploymentTool
             Application.Exit();
         }
 
-        private void comboBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadProfileData(comboBoxProfiles.SelectedItem as Profile);
+            CurrentProfile = comboBoxProfiles.SelectedItem as Profile;
         }
 
-        private void LoadProfileData(Profile profile)
-        {
-
-        }
 
         private void SaveButtonClick(object sender, EventArgs e)
         {
-
+            SettingsManager.Instance.UpdateProfile(CurrentProfile);
+            SettingsManager.SaveConfig();
+            UpdateProfilesComboBox();
         }
 
         private void ButtonAddProfile_Click(object sender, EventArgs e)
@@ -74,6 +120,9 @@ namespace DeploymentTool
             SettingsManager.SaveConfig();
 
             UpdateProfilesComboBox();
+
+            comboBoxProfiles.SelectedIndex = comboBoxProfiles.Items.Count - 1;
+            ComboBoxProfiles_SelectedIndexChanged(null, null);
         }
 
         private void ButtonDeleteProfile_Click(object sender, EventArgs e)
@@ -85,9 +134,14 @@ namespace DeploymentTool
                 return;
             }
 
-            var prevSelectedName = prevSelected.Name ?? "Unnamed";
+            var prevSelectedName = prevSelected.Name;
+            if (String.IsNullOrWhiteSpace(prevSelectedName))
+            {
+                prevSelectedName = "Unnamed";
+            }
 
-            if (MessageBox.Show($"Are you sure want to remove profile: ${prevSelectedName}?") == DialogResult.OK)
+            if (MessageBox.Show($"Are you sure want to remove profile: {prevSelectedName}?",
+                "Conformation", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
             {
                 SettingsManager.Instance.RemoveProfile(prevSelected.ID);
                 SettingsManager.SaveConfig();
