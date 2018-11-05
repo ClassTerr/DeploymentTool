@@ -88,12 +88,10 @@ namespace DeploymentTool
             {
                 MessageBox.Show("Ошибка сериализации SaveConfig\n" + e.Message);
             }
-
             finally
             {
                 myXmlWriter.Dispose();
             }
         }
-
     }
 }
