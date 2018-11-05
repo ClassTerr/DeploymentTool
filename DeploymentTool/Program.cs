@@ -1,3 +1,4 @@
+using DeploymentTool.Core.Filesystem;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -19,7 +20,7 @@ namespace DeploymentTool
             string settingsPath = ConfigurationManager.AppSettings.Get("settingsFilePath");
             SettingsManager.ConfigFilePath = settingsPath;
 
-            Application.Run(new MainForm());
+            Application.Run(new SettingsWindow());
         }
     }
 }

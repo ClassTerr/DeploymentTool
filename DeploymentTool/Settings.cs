@@ -16,18 +16,23 @@ namespace DeploymentTool
 
         public Profile GetProfile(string profileName)
         {
-            return Profiles?.FirstOrDefault(profile => profile.ProfileName == profileName);
+            return Profiles?.FirstOrDefault(profile => profile.Name == profileName);
         }
     }
 
 
     public class Profile
     {
-        public string ProfileName { get; set; }
-        public string ProjectUrl { get; set; }
+        [XmlAttribute]
+        public string Name { get; set; }
         public List<string> IncludedPaths { get; set; }
         public List<string> ExcludedPaths { get; set; }
         public string UpadateAPIURL { get; set; }
         public string UpadateAPISSH { get; set; }
+
+        public override string ToString()
+        {
+            return Name ?? "Profile";
+        }
     }
 }
