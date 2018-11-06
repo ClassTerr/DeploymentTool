@@ -1,3 +1,4 @@
+using DeploymentTool.Core.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,10 +11,10 @@ using System.Windows.Forms;
 
 namespace DeploymentTool
 {
-    public partial class SettingsWindow : Form
+    public partial class ProfilesManagerWindow : Form
     {
 
-        public SettingsWindow()
+        public ProfilesManagerWindow()
         {
             InitializeComponent();
 
@@ -43,7 +44,14 @@ namespace DeploymentTool
 
             if (prevSelectedID == null)
             {
-                CurrentProfile = null;
+                if (profiles.Count == 0)
+                {
+                    CurrentProfile = null;
+                }
+                else
+                {
+                    comboBoxProfiles.SelectedIndex = 0;
+                }
             }
         }
 
@@ -59,12 +67,12 @@ namespace DeploymentTool
                         ID = Guid.Parse(textBoxId.Text),
                         Name = textBoxName.Text,
                         APICommand = textBoxAPICommand.Text,
-                        ExcludedPaths = textBoxExcludedPaths.Text.Split('\n').ToList(),
-                        IncludedPaths = textBoxIncludedPaths.Text.Split('\n').ToList()
+                        RootFolder = textBoxRootFolder.Text,
+                        ExcludedPaths = textBoxExcludedPaths.Text.Split('\n').ToList()
                     };
 
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     return null;
                 }
@@ -78,14 +86,14 @@ namespace DeploymentTool
                     textBoxName.Text =
                     textBoxAPICommand.Text =
                     textBoxExcludedPaths.Text =
-                    textBoxIncludedPaths.Text = "";
+                    textBoxRootFolder.Text = "";
                 }
 
                 textBoxId.Text = value?.ID.ToString();
                 textBoxName.Text = value?.Name;
                 textBoxAPICommand.Text = value?.APICommand;
-                textBoxExcludedPaths.Text = String.Join("\n", value?.ExcludedPaths ?? new List<string>());
-                textBoxIncludedPaths.Text = String.Join("\n", value?.IncludedPaths ?? new List<string>());
+                textBoxRootFolder.Text = value?.RootFolder;
+                textBoxExcludedPaths.Text = String.Join(Environment.NewLine, value?.ExcludedPaths ?? new List<string>());
             }
         }
 
@@ -146,6 +154,29 @@ namespace DeploymentTool
                 SettingsManager.Instance.RemoveProfile(prevSelected.ID);
                 SettingsManager.SaveConfig();
                 UpdateProfilesComboBox();
+            }
+        }
+
+        private void ButtonEditExcludedPaths_Click(object sender, EventArgs e)
+        {
+            FilesystemMultiselectDialog dialog = new FilesystemMultiselectDialog(textBoxRootFolder.Text);
+            if (dialog.ShowDialog(this) == DialogResult.OK)
+            {
+                textBoxExcludedPaths.Text = String.Join(Environment.NewLine, dialog.SelectedPaths);
+            }
+        }
+
+        private void RestoreButton_Click(object sender, EventArgs e)
+        {
+            CurrentProfile = comboBoxProfiles.SelectedItem as Profile;
+        }
+
+        private void ButtonSelectRootFolder_Click(object sender, EventArgs e)
+        {
+            folderBrowserDialog.SelectedPath = textBoxRootFolder.Text;
+            if (folderBrowserDialog.ShowDialog(this) == DialogResult.OK)
+            {
+                textBoxRootFolder.Text = folderBrowserDialog.SelectedPath;
             }
         }
     }

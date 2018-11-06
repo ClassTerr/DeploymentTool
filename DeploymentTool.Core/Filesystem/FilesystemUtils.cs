@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DeploymentTool.Core.Filesystem
@@ -14,32 +15,32 @@ namespace DeploymentTool.Core.Filesystem
             return GetDirectoryFiles(directoryPath, null, new List<string>());
         }
 
-        public static List<string> GetDirectoryFiles(string directoryPath, IEnumerable<string> excludedPaths)
+        public static List<string> GetDirectoryFiles(string directoryPath, IEnumerable<string> excludedRules)
         {
-            return GetDirectoryFiles(directoryPath, excludedPaths, new List<string>());
+            return GetDirectoryFiles(directoryPath, excludedRules, new List<string>());
         }
 
-        public static List<string> GetDirectoryFiles(string directoryPath, IEnumerable<string> excludedPaths, List<string> existingResult)
+        public static List<string> GetDirectoryFiles(string directoryPath, IEnumerable<string> excludedRules, List<string> existingResult)
         {
             if (!Directory.Exists(directoryPath))
                 return existingResult;
 
-            if (excludedPaths == null)
-                excludedPaths = new string[0];
+            if (excludedRules == null)
+                excludedRules = new string[0];
 
             //clear all unused paths for optimization purposes
-            excludedPaths = excludedPaths.Where(path => path.StartsWith(directoryPath));
+            excludedRules = excludedRules.Where(path => path.StartsWith(directoryPath));
 
             string[] files = Directory.GetFiles(directoryPath);
 
             //add to result all non-excluded files
-            existingResult.AddRange(files.Where(file => !excludedPaths.Where(file.StartsWith).Any()));
+            existingResult.AddRange(files.Where(file => !excludedRules.Where(file.StartsWith).Any()));
 
             string[] subDirectories = Directory.GetDirectories(directoryPath);
 
             foreach (var subDirectory in subDirectories)
             {
-                GetDirectoryFiles(subDirectory, excludedPaths, existingResult);
+                GetDirectoryFiles(subDirectory, excludedRules, existingResult);
             }
 
             return existingResult;
@@ -50,6 +51,34 @@ namespace DeploymentTool.Core.Filesystem
             return Path.GetFullPath(new Uri(path).LocalPath)
                        .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
                        .ToUpperInvariant();
+        }
+
+        public static void GetsAllFilesAndDirectories(string rootPath, bool recursively = true)
+        {
+            string searchPattern = "*";
+
+
+            SearchOption option = recursively 
+                ? SearchOption.AllDirectories 
+                : SearchOption.TopDirectoryOnly;
+
+            DirectoryInfo di = new DirectoryInfo(rootPath);
+            DirectoryInfo[] directories =
+                di.GetDirectories(searchPattern, option);
+
+            FileInfo[] files =
+                di.GetFiles(searchPattern, option);
+
+            var allData = files.Cast<FileSystemInfo>()
+                .Union(directories.Cast<FileSystemInfo>())
+                .OrderBy(x => x.FullName).ToList();
+        }
+
+        public static bool TestExcluded(string path, IEnumerable<string> excludedRules)
+        {
+            return excludedRules.Any(rule =>
+                Regex.IsMatch(path, rule)
+            );
         }
     }
 }

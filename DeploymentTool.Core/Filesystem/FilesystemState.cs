@@ -17,6 +17,7 @@ namespace DeploymentTool.Core.Filesystem
 
         public static void /*FilesystemState*/ GetFilesystemState(IEnumerable<string> includedPaths, IEnumerable<string> excludedPaths)
         {
+            //TODO
             includedPaths = includedPaths.Select(Path.GetFullPath);
             excludedPaths = excludedPaths.Select(Path.GetFullPath);
 

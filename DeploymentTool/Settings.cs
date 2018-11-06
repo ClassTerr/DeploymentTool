@@ -26,7 +26,7 @@ namespace DeploymentTool
 
         public bool UpdateProfile(Profile profile)
         {
-            var index = Profiles.FindIndex(x => x.ID == profile.ID);
+            var index = Profiles.FindIndex(x => x.ID == profile?.ID);
             if (index != -1)
             {
                 Profiles[index] = profile;
@@ -55,7 +55,7 @@ namespace DeploymentTool
 
         [XmlAttribute]
         public string Name { get; set; }
-        public List<string> IncludedPaths { get; set; }
+        public string RootFolder { get; set; }
         public List<string> ExcludedPaths { get; set; }
         public string APICommand { get; set; }
         public string UpadateAPISSH { get; set; }

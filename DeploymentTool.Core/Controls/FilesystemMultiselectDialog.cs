@@ -16,12 +16,27 @@ namespace DeploymentTool.Core.Controls
         {
             InitializeComponent();
         }
+        public FilesystemMultiselectDialog(string rootDirectory)
+        {
+            InitializeComponent();
+            filesystemTreeView.RootDirectory = rootDirectory;
+        }
+        public string RootDirectory
+        {
+            get
+            {
+                return filesystemTreeView.RootDirectory;
+            }
+            set
+            {
+                filesystemTreeView.RootDirectory = value;
+            }
+        }
 
         public List<string> SelectedPaths
         {
             get { return GetSelectedPaths(); }
         }
-
 
         public List<string> GetSelectedPaths()
         {

@@ -15,25 +15,64 @@ namespace DeploymentTool.Core.Controls
 {
     public partial class FilesystemMultiselectTreeView : UserControl
     {
+        private bool wasLoaded = false;
         public FilesystemMultiselectTreeView()
         {
             InitializeComponent();
-            LoadData();
+            Load += (s, e) =>
+            {
+                if (!wasLoaded)
+                    LoadData();
+            };
+        }
+        public FilesystemMultiselectTreeView(string rootDirectory)
+        {
+            InitializeComponent();
+            RootDirectory = rootDirectory;
         }
 
         public void LoadData()
         {
-            var drives = DriveInfo.GetDrives();
-            foreach (var drive in drives)
+            treeView.Nodes.Clear();
+
+            // if there is no existing direcory show root folder
+            if (!Directory.Exists(RootDirectory))
             {
-                string label = drive.RootDirectory.FullName;
-                TreeNode rootNode = new TreeNode(label);
+                var drives = DriveInfo.GetDrives();
+                foreach (var drive in drives)
+                {
+                    string label = drive.RootDirectory.FullName;
+                    TreeNode rootNode = new TreeNode(label);
+                    treeView.Nodes.Add(rootNode);
+                    LoadNodes(rootNode);
+                }
+            }
+            else
+            {
+                TreeNode rootNode = new TreeNode(RootDirectory);
                 treeView.Nodes.Add(rootNode);
                 LoadNodes(rootNode);
             }
+
+            wasLoaded = true;
         }
 
-        public void LoadNodes(TreeNode currentNode)
+
+        private string rootDirectory = null;
+        public string RootDirectory
+        {
+            get
+            {
+                return rootDirectory;
+            }
+            set
+            {
+                rootDirectory = value;
+                LoadData();
+            }
+        }
+
+        private void LoadNodes(TreeNode currentNode)
         {
             currentNode.Nodes.Clear();
             string[] subDirectories;
@@ -116,6 +155,7 @@ namespace DeploymentTool.Core.Controls
 
         private void SetCheckedPaths(TreeNodeCollection nodes, List<string> paths)
         {
+            //TODO
             throw new NotImplementedException();
             foreach (string item in paths)
             {
@@ -123,7 +163,7 @@ namespace DeploymentTool.Core.Controls
                 List<string> parts = path
                     .Split(Path.DirectorySeparatorChar)
                     .Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-                
+
             }
         }
 

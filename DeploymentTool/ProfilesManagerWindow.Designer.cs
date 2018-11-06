@@ -1,6 +1,6 @@
 namespace DeploymentTool
 {
-    partial class SettingsWindow
+    partial class ProfilesManagerWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -32,22 +32,20 @@ namespace DeploymentTool
             System.Windows.Forms.Label labelProfiles;
             System.Windows.Forms.GroupBox groupBox1;
             System.Windows.Forms.Panel panel1;
-            System.Windows.Forms.GroupBox groupBox2;
             System.Windows.Forms.GroupBox groupBox3;
+            System.Windows.Forms.Label label3;
             System.Windows.Forms.Label label2;
             System.Windows.Forms.Label label1;
             System.Windows.Forms.Button SaveButton;
             System.Windows.Forms.Button RestoreButton;
             System.Windows.Forms.Panel panel3;
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsWindow));
-            this.textBoxId = new System.Windows.Forms.TextBox();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.textBoxIncludedPaths = new System.Windows.Forms.TextBox();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.buttonEditIncludedPaths = new System.Windows.Forms.Button();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfilesManagerWindow));
             this.textBoxExcludedPaths = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.buttonEditExcludedPaths = new System.Windows.Forms.Button();
+            this.buttonSelectRootFolder = new System.Windows.Forms.Button();
+            this.textBoxId = new System.Windows.Forms.TextBox();
+            this.textBoxRootFolder = new System.Windows.Forms.TextBox();
             this.textBoxAPICommand = new System.Windows.Forms.TextBox();
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.taskbarIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -60,11 +58,12 @@ namespace DeploymentTool
             this.comboBoxProfiles = new System.Windows.Forms.ComboBox();
             this.buttonDeleteProfile = new System.Windows.Forms.Button();
             this.buttonAddProfile = new System.Windows.Forms.Button();
+            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             labelProfiles = new System.Windows.Forms.Label();
             groupBox1 = new System.Windows.Forms.GroupBox();
             panel1 = new System.Windows.Forms.Panel();
-            groupBox2 = new System.Windows.Forms.GroupBox();
             groupBox3 = new System.Windows.Forms.GroupBox();
+            label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             label1 = new System.Windows.Forms.Label();
             SaveButton = new System.Windows.Forms.Button();
@@ -72,12 +71,6 @@ namespace DeploymentTool
             panel3 = new System.Windows.Forms.Panel();
             groupBox1.SuspendLayout();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            groupBox2.SuspendLayout();
-            this.panel4.SuspendLayout();
             groupBox3.SuspendLayout();
             this.panel2.SuspendLayout();
             panel3.SuspendLayout();
@@ -104,14 +97,17 @@ namespace DeploymentTool
             groupBox1.Size = new System.Drawing.Size(924, 444);
             groupBox1.TabIndex = 5;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Settings";
+            groupBox1.Text = "Profile settings";
             // 
             // panel1
             // 
             panel1.AutoScroll = true;
+            panel1.Controls.Add(groupBox3);
+            panel1.Controls.Add(this.buttonSelectRootFolder);
             panel1.Controls.Add(this.textBoxId);
-            panel1.Controls.Add(this.splitContainer1);
+            panel1.Controls.Add(this.textBoxRootFolder);
             panel1.Controls.Add(this.textBoxAPICommand);
+            panel1.Controls.Add(label3);
             panel1.Controls.Add(this.textBoxName);
             panel1.Controls.Add(label2);
             panel1.Controls.Add(label1);
@@ -121,83 +117,14 @@ namespace DeploymentTool
             panel1.Size = new System.Drawing.Size(918, 425);
             panel1.TabIndex = 0;
             // 
-            // textBoxId
-            // 
-            this.textBoxId.Location = new System.Drawing.Point(82, 3);
-            this.textBoxId.Multiline = true;
-            this.textBoxId.Name = "textBoxId";
-            this.textBoxId.Size = new System.Drawing.Size(0, 1);
-            this.textBoxId.TabIndex = 18;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(6, 67);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(groupBox2);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(groupBox3);
-            this.splitContainer1.Size = new System.Drawing.Size(909, 355);
-            this.splitContainer1.SplitterDistance = 445;
-            this.splitContainer1.SplitterWidth = 8;
-            this.splitContainer1.TabIndex = 16;
-            // 
-            // groupBox2
-            // 
-            groupBox2.Controls.Add(this.textBoxIncludedPaths);
-            groupBox2.Controls.Add(this.panel4);
-            groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox2.Location = new System.Drawing.Point(0, 0);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(445, 355);
-            groupBox2.TabIndex = 14;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Included paths list";
-            // 
-            // textBoxIncludedPaths
-            // 
-            this.textBoxIncludedPaths.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxIncludedPaths.Location = new System.Drawing.Point(3, 16);
-            this.textBoxIncludedPaths.Multiline = true;
-            this.textBoxIncludedPaths.Name = "textBoxIncludedPaths";
-            this.textBoxIncludedPaths.Size = new System.Drawing.Size(439, 301);
-            this.textBoxIncludedPaths.TabIndex = 0;
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.buttonEditIncludedPaths);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(3, 317);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(439, 35);
-            this.panel4.TabIndex = 1;
-            // 
-            // buttonEditIncludedPaths
-            // 
-            this.buttonEditIncludedPaths.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.buttonEditIncludedPaths.Location = new System.Drawing.Point(185, 6);
-            this.buttonEditIncludedPaths.Name = "buttonEditIncludedPaths";
-            this.buttonEditIncludedPaths.Size = new System.Drawing.Size(75, 23);
-            this.buttonEditIncludedPaths.TabIndex = 9;
-            this.buttonEditIncludedPaths.Text = "Edit";
-            this.buttonEditIncludedPaths.UseVisualStyleBackColor = true;
-            // 
             // groupBox3
             // 
             groupBox3.Controls.Add(this.textBoxExcludedPaths);
             groupBox3.Controls.Add(this.panel2);
-            groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            groupBox3.Location = new System.Drawing.Point(0, 0);
+            groupBox3.Location = new System.Drawing.Point(16, 98);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(456, 355);
-            groupBox3.TabIndex = 15;
+            groupBox3.Size = new System.Drawing.Size(896, 324);
+            groupBox3.TabIndex = 20;
             groupBox3.TabStop = false;
             groupBox3.Text = "Excluded paths list";
             // 
@@ -207,27 +134,55 @@ namespace DeploymentTool
             this.textBoxExcludedPaths.Location = new System.Drawing.Point(3, 16);
             this.textBoxExcludedPaths.Multiline = true;
             this.textBoxExcludedPaths.Name = "textBoxExcludedPaths";
-            this.textBoxExcludedPaths.Size = new System.Drawing.Size(450, 301);
+            this.textBoxExcludedPaths.Size = new System.Drawing.Size(810, 305);
             this.textBoxExcludedPaths.TabIndex = 0;
             // 
             // panel2
             // 
             this.panel2.Controls.Add(this.buttonEditExcludedPaths);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(3, 317);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel2.Location = new System.Drawing.Point(813, 16);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(450, 35);
+            this.panel2.Size = new System.Drawing.Size(80, 305);
             this.panel2.TabIndex = 1;
             // 
             // buttonEditExcludedPaths
             // 
             this.buttonEditExcludedPaths.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.buttonEditExcludedPaths.Location = new System.Drawing.Point(185, 6);
+            this.buttonEditExcludedPaths.Location = new System.Drawing.Point(2, 6);
             this.buttonEditExcludedPaths.Name = "buttonEditExcludedPaths";
             this.buttonEditExcludedPaths.Size = new System.Drawing.Size(75, 23);
             this.buttonEditExcludedPaths.TabIndex = 9;
             this.buttonEditExcludedPaths.Text = "Edit";
             this.buttonEditExcludedPaths.UseVisualStyleBackColor = true;
+            this.buttonEditExcludedPaths.Click += new System.EventHandler(this.ButtonEditExcludedPaths_Click);
+            // 
+            // buttonSelectRootFolder
+            // 
+            this.buttonSelectRootFolder.Location = new System.Drawing.Point(840, 54);
+            this.buttonSelectRootFolder.Name = "buttonSelectRootFolder";
+            this.buttonSelectRootFolder.Size = new System.Drawing.Size(75, 22);
+            this.buttonSelectRootFolder.TabIndex = 19;
+            this.buttonSelectRootFolder.Text = "Select";
+            this.buttonSelectRootFolder.UseVisualStyleBackColor = true;
+            this.buttonSelectRootFolder.Click += new System.EventHandler(this.ButtonSelectRootFolder_Click);
+            // 
+            // textBoxId
+            // 
+            this.textBoxId.Location = new System.Drawing.Point(82, 3);
+            this.textBoxId.Multiline = true;
+            this.textBoxId.Name = "textBoxId";
+            this.textBoxId.Size = new System.Drawing.Size(0, 1);
+            this.textBoxId.TabIndex = 18;
+            // 
+            // textBoxRootFolder
+            // 
+            this.textBoxRootFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxRootFolder.Location = new System.Drawing.Point(101, 55);
+            this.textBoxRootFolder.Name = "textBoxRootFolder";
+            this.textBoxRootFolder.Size = new System.Drawing.Size(739, 20);
+            this.textBoxRootFolder.TabIndex = 12;
             // 
             // textBoxAPICommand
             // 
@@ -237,6 +192,15 @@ namespace DeploymentTool
             this.textBoxAPICommand.Name = "textBoxAPICommand";
             this.textBoxAPICommand.Size = new System.Drawing.Size(814, 20);
             this.textBoxAPICommand.TabIndex = 12;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(13, 58);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(62, 13);
+            label3.TabIndex = 10;
+            label3.Text = "Root Folder";
             // 
             // textBoxName
             // 
@@ -285,6 +249,7 @@ namespace DeploymentTool
             RestoreButton.TabIndex = 9;
             RestoreButton.Text = "Restore";
             RestoreButton.UseVisualStyleBackColor = true;
+            RestoreButton.Click += new System.EventHandler(this.RestoreButton_Click);
             // 
             // panel3
             // 
@@ -383,7 +348,7 @@ namespace DeploymentTool
             this.buttonAddProfile.UseVisualStyleBackColor = true;
             this.buttonAddProfile.Click += new System.EventHandler(this.ButtonAddProfile_Click);
             // 
-            // SettingsWindow
+            // ProfilesManagerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -395,18 +360,12 @@ namespace DeploymentTool
             this.Controls.Add(labelProfiles);
             this.Controls.Add(this.comboBoxProfiles);
             this.Controls.Add(groupBox1);
-            this.Name = "SettingsWindow";
-            this.Text = "Deployment Tool Client";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "ProfilesManagerWindow";
+            this.Text = "Deployment Tool Client: Profiles manager";
             groupBox1.ResumeLayout(false);
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
-            this.panel4.ResumeLayout(false);
             groupBox3.ResumeLayout(false);
             groupBox3.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -427,18 +386,17 @@ namespace DeploymentTool
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBoxProfiles;
-        private System.Windows.Forms.TextBox textBoxExcludedPaths;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button buttonEditExcludedPaths;
-        private System.Windows.Forms.TextBox textBoxIncludedPaths;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button buttonEditIncludedPaths;
         private System.Windows.Forms.TextBox textBoxAPICommand;
         private System.Windows.Forms.TextBox textBoxName;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Button buttonDeleteProfile;
         private System.Windows.Forms.Button buttonAddProfile;
         private System.Windows.Forms.TextBox textBoxId;
+        private System.Windows.Forms.Button buttonSelectRootFolder;
+        private System.Windows.Forms.TextBox textBoxRootFolder;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.TextBox textBoxExcludedPaths;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button buttonEditExcludedPaths;
     }
 }
 

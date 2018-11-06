@@ -20,7 +20,7 @@ namespace DeploymentTool
             string settingsPath = ConfigurationManager.AppSettings.Get("settingsFilePath");
             SettingsManager.ConfigFilePath = settingsPath;
 
-            Application.Run(new SettingsWindow());
+            Application.Run(new ProfilesManagerWindow());
         }
     }
 }
