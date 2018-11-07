@@ -4,4 +4,6 @@
 /DeploymentTool/obj
 /DeploymentTool.Core/bin
 /DeploymentTool.Core/obj
+/DeploymentTool.CoreTests/bin
+/DeploymentTool.CoreTests/obj
 /packages/
