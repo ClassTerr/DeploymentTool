@@ -13,6 +13,7 @@ namespace DeploymentTool.Core
         {
             return rules?.Select(rule => ConvertToRegexp(rule)).ToArray();
         }
+
         public static string ConvertToRegexp(string rule)
         {
             if (string.IsNullOrEmpty(rule))

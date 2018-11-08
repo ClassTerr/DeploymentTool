@@ -40,6 +40,7 @@ namespace DeploymentTool
             System.Windows.Forms.Button RestoreButton;
             System.Windows.Forms.Panel panel3;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfilesManagerWindow));
+            System.Windows.Forms.Label label4;
             this.textBoxExcludedPaths = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.buttonEditExcludedPaths = new System.Windows.Forms.Button();
@@ -69,6 +70,7 @@ namespace DeploymentTool
             SaveButton = new System.Windows.Forms.Button();
             RestoreButton = new System.Windows.Forms.Button();
             panel3 = new System.Windows.Forms.Panel();
+            label4 = new System.Windows.Forms.Label();
             groupBox1.SuspendLayout();
             panel1.SuspendLayout();
             groupBox3.SuspendLayout();
@@ -110,6 +112,7 @@ namespace DeploymentTool
             panel1.Controls.Add(label3);
             panel1.Controls.Add(this.textBoxName);
             panel1.Controls.Add(label2);
+            panel1.Controls.Add(label4);
             panel1.Controls.Add(label1);
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             panel1.Location = new System.Drawing.Point(3, 16);
@@ -121,9 +124,9 @@ namespace DeploymentTool
             // 
             groupBox3.Controls.Add(this.textBoxExcludedPaths);
             groupBox3.Controls.Add(this.panel2);
-            groupBox3.Location = new System.Drawing.Point(16, 98);
+            groupBox3.Location = new System.Drawing.Point(16, 127);
             groupBox3.Name = "groupBox3";
-            groupBox3.Size = new System.Drawing.Size(896, 324);
+            groupBox3.Size = new System.Drawing.Size(896, 295);
             groupBox3.TabIndex = 20;
             groupBox3.TabStop = false;
             groupBox3.Text = "Excluded paths list";
@@ -134,7 +137,7 @@ namespace DeploymentTool
             this.textBoxExcludedPaths.Location = new System.Drawing.Point(3, 16);
             this.textBoxExcludedPaths.Multiline = true;
             this.textBoxExcludedPaths.Name = "textBoxExcludedPaths";
-            this.textBoxExcludedPaths.Size = new System.Drawing.Size(810, 305);
+            this.textBoxExcludedPaths.Size = new System.Drawing.Size(810, 276);
             this.textBoxExcludedPaths.TabIndex = 0;
             // 
             // panel2
@@ -143,7 +146,7 @@ namespace DeploymentTool
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel2.Location = new System.Drawing.Point(813, 16);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(80, 305);
+            this.panel2.Size = new System.Drawing.Size(80, 276);
             this.panel2.TabIndex = 1;
             // 
             // buttonEditExcludedPaths
@@ -159,7 +162,7 @@ namespace DeploymentTool
             // 
             // buttonSelectRootFolder
             // 
-            this.buttonSelectRootFolder.Location = new System.Drawing.Point(840, 54);
+            this.buttonSelectRootFolder.Location = new System.Drawing.Point(837, 99);
             this.buttonSelectRootFolder.Name = "buttonSelectRootFolder";
             this.buttonSelectRootFolder.Size = new System.Drawing.Size(75, 22);
             this.buttonSelectRootFolder.TabIndex = 19;
@@ -169,17 +172,16 @@ namespace DeploymentTool
             // 
             // textBoxId
             // 
-            this.textBoxId.Location = new System.Drawing.Point(82, 3);
-            this.textBoxId.Multiline = true;
+            this.textBoxId.Location = new System.Drawing.Point(98, 22);
             this.textBoxId.Name = "textBoxId";
-            this.textBoxId.Size = new System.Drawing.Size(0, 1);
+            this.textBoxId.Size = new System.Drawing.Size(814, 20);
             this.textBoxId.TabIndex = 18;
             // 
             // textBoxRootFolder
             // 
             this.textBoxRootFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxRootFolder.Location = new System.Drawing.Point(101, 55);
+            this.textBoxRootFolder.Location = new System.Drawing.Point(98, 100);
             this.textBoxRootFolder.Name = "textBoxRootFolder";
             this.textBoxRootFolder.Size = new System.Drawing.Size(739, 20);
             this.textBoxRootFolder.TabIndex = 12;
@@ -188,7 +190,7 @@ namespace DeploymentTool
             // 
             this.textBoxAPICommand.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxAPICommand.Location = new System.Drawing.Point(101, 29);
+            this.textBoxAPICommand.Location = new System.Drawing.Point(98, 74);
             this.textBoxAPICommand.Name = "textBoxAPICommand";
             this.textBoxAPICommand.Size = new System.Drawing.Size(814, 20);
             this.textBoxAPICommand.TabIndex = 12;
@@ -196,7 +198,7 @@ namespace DeploymentTool
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new System.Drawing.Point(13, 58);
+            label3.Location = new System.Drawing.Point(16, 103);
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(62, 13);
             label3.TabIndex = 10;
@@ -206,7 +208,7 @@ namespace DeploymentTool
             // 
             this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxName.Location = new System.Drawing.Point(101, 3);
+            this.textBoxName.Location = new System.Drawing.Point(98, 48);
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(814, 20);
             this.textBoxName.TabIndex = 13;
@@ -214,7 +216,7 @@ namespace DeploymentTool
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(13, 32);
+            label2.Location = new System.Drawing.Point(16, 77);
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(73, 13);
             label2.TabIndex = 10;
@@ -223,7 +225,7 @@ namespace DeploymentTool
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(13, 6);
+            label1.Location = new System.Drawing.Point(16, 51);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(35, 13);
             label1.TabIndex = 11;
@@ -347,6 +349,15 @@ namespace DeploymentTool
             this.buttonAddProfile.Text = "Add";
             this.buttonAddProfile.UseVisualStyleBackColor = true;
             this.buttonAddProfile.Click += new System.EventHandler(this.ButtonAddProfile_Click);
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new System.Drawing.Point(16, 25);
+            label4.Name = "label4";
+            label4.Size = new System.Drawing.Size(52, 13);
+            label4.TabIndex = 11;
+            label4.Text = "UniqueID";
             // 
             // ProfilesManagerWindow
             // 

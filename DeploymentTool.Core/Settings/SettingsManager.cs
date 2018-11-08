@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace DeploymentTool
+namespace DeploymentTool.Core.Settings
 {
     public class SettingsManager
     {

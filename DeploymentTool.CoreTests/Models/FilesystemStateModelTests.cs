@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using DeploymentTool.Core.Models;
+using DeploymentTool.Core.Settings;
 
 namespace DeploymentTool.Core.Filesystem.Tests
 {
@@ -19,42 +20,47 @@ namespace DeploymentTool.Core.Filesystem.Tests
             string folder = Path.Combine(Path.GetTempPath(), "DeploymentToolTesting");
             string filename = Path.Combine(folder, "test.txt");
 
-            if (!Directory.Exists(folder))
+            if (!Directory.Exists(folder))  
             {
                 Directory.CreateDirectory(folder);
             }
 
             File.Delete(filename);
 
+            Profile profile = new Profile()
+            {
+                ID = "Test Profile",
+                RootFolder = folder
+            };
 
-            var state1 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
-            var state2 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
+            var state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            var state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
             var diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 0, 0, 0);
 
             /////////////////////////////////////////////
 
-            state1 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
+            state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
             using (File.Create(filename)) { }
-            state2 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
+            state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
 
             diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 1, 0, 0);
 
             /////////////////////////////////////////////
 
-            state1 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
+            state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
             File.WriteAllText(filename, "test");
-            state2 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
+            state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
 
             diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 0, 1, 0);
 
             /////////////////////////////////////////////
 
-            state1 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
+            state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
             File.Delete(filename);
-            state2 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
+            state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
 
             diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 0, 0, 1);

@@ -55,8 +55,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsManager.cs" />
-    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="ProfilesManagerWindow.resx">
       <DependentUpon>ProfilesManagerWindow.cs</DependentUpon>
     </EmbeddedResource>

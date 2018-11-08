@@ -7,8 +7,9 @@ using System.Text.RegularExpressions;
 using DeploymentTool.Core.Filesystem;
 using DeploymentTool.Core.Models;
 using DeploymentTool.Core.Helpers;
+using DeploymentTool.Core.Settings;
 
-namespace DeploymentTool.Core.Filesystem
+namespace DeploymentTool.Core.Models
 {
     public class FilesystemStateModel
     {
@@ -18,16 +19,22 @@ namespace DeploymentTool.Core.Filesystem
         }
 
         public FileDataModel[] FileStates { get; set; }
+        public string ProfileID { get; set; }
+        public DateTime CreatedUTC { get; set; }
 
         public DateTime SnapshotDateTime { get; set; }
 
-        public static FilesystemStateModel GetFullFolderFilesystemState(string rootPath, IEnumerable<string> exclusionRules)
+        public static FilesystemStateModel GetFullProfileFilesystemState(Profile profile)
         {
-            rootPath = FilesystemUtils.NormalizePath(rootPath);
+            var rootPath = FilesystemUtils.NormalizePath(profile.RootFolder);
 
-            var result = new FilesystemStateModel();
+            var result = new FilesystemStateModel()
+            {
+                ProfileID = profile.ID,
+                CreatedUTC = DateTime.UtcNow
+            };
 
-            FileDataModel[] fileDataModels = FilesystemUtils.GetAllAllowedFilesDataModel(rootPath, exclusionRules);
+            FileDataModel[] fileDataModels = FilesystemUtils.GetAllAllowedFilesDataModel(rootPath, profile.ExcludedPaths);
             foreach (FileDataModel model in fileDataModels)
             {
                 var filename = FilesystemUtils.NormalizePath(model.Filename);
@@ -46,8 +53,6 @@ namespace DeploymentTool.Core.Filesystem
                                                                   FilesystemStateModel remoteState)
         {
             return GetFilesystemStateDiff(currentState.FileStates, remoteState.FileStates);
-
-
         }
 
         public static FilesystemDifference GetFilesystemStateDiff(IEnumerable<FileDataModel> currentFileStates,
@@ -55,18 +60,18 @@ namespace DeploymentTool.Core.Filesystem
         {
             var notModifiedFiles = currentFileStates.Intersect(remoteFileStates);
 
-            var currentChangedFileStates = currentFileStates.Except(notModifiedFiles);
-            var remoteChangedFileStates = remoteFileStates.Except(notModifiedFiles);
+            var currentChangedFiles = currentFileStates.Except(notModifiedFiles);
+            var remoteChangedFiles = remoteFileStates.Except(notModifiedFiles);
 
             remoteFileStates = remoteFileStates.Except(notModifiedFiles);
 
-            var currentNameDict = currentChangedFileStates.ToDictionary(x => x.Filename);                       // O(log n)
-            var remoteNameDict = remoteChangedFileStates.ToDictionary(x => x.Filename);                         // O(log n)
-                                                                                                                   
-            var createdFiles = remoteChangedFileStates.Where(x => !currentNameDict.ContainsKey(x.Filename));    // O(n * log m)
-            var removedFiles = currentFileStates.Where(x => !remoteNameDict.ContainsKey(x.Filename));           // O(n * log m)
+            var currentNameDict = currentChangedFiles.ToDictionary(x => x.Filename);                       // O(log n)
+            var remoteNameDict = remoteChangedFiles.ToDictionary(x => x.Filename);                         // O(log n)
 
-            var modifiedFiles = currentChangedFileStates.Where(x =>
+            var createdFiles = remoteChangedFiles.Where(x => !currentNameDict.ContainsKey(x.Filename));    // O(n * log m)
+            var removedFiles = currentFileStates.Where(x => !remoteNameDict.ContainsKey(x.Filename));      // O(n * log m)
+
+            var modifiedFiles = currentChangedFiles.Where(x =>
             {
                 if (remoteNameDict.TryGetValue(x.Filename, out FileDataModel model))
                 {

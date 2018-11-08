@@ -1,7 +1,7 @@
-using DeploymentTool.Core.Filesystem;
+using DeploymentTool.Core.Settings;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Windows.Forms;
 
 namespace DeploymentTool

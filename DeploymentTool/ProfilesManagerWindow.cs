@@ -1,12 +1,8 @@
 using DeploymentTool.Core.Controls;
+using DeploymentTool.Core.Settings;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DeploymentTool
@@ -64,7 +60,7 @@ namespace DeploymentTool
                 {
                     return new Profile()
                     {
-                        ID = Guid.Parse(textBoxId.Text),
+                        ID = textBoxId.Text,
                         Name = textBoxName.Text,
                         APICommand = textBoxAPICommand.Text,
                         RootFolder = textBoxRootFolder.Text,
@@ -112,7 +108,20 @@ namespace DeploymentTool
 
         private void SaveButtonClick(object sender, EventArgs e)
         {
-            SettingsManager.Instance.UpdateProfile(CurrentProfile);
+            var profileId = (comboBoxProfiles.SelectedItem as Profile).ID;
+            var curr = CurrentProfile;
+
+            if (curr.ID != profileId)
+            {
+                if (SettingsManager.Instance.GetProfile(curr.ID) != null)
+                {
+                    MessageBox.Show("Profile with the same id already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    textBoxId.Focus();
+                    return;
+                }
+            }
+
+            SettingsManager.Instance.UpdateProfile(CurrentProfile, profileId);
             SettingsManager.SaveConfig();
             UpdateProfilesComboBox();
         }

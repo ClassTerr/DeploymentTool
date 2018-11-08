@@ -12,6 +12,18 @@ namespace DeploymentTool.Core.Filesystem
 {
     public static class FilesystemUtils
     {
+        public static void CreateDirectory(string directory)
+        {
+            CreateDirectory(new DirectoryInfo(directory));
+        }
+
+        public static void CreateDirectory(DirectoryInfo directory)
+        {
+            if (!directory.Parent.Exists)
+                CreateDirectory(directory.Parent);
+            directory.Create();
+        }
+
         public static FileDataModel[] GetAllAllowedFilesDataModel(string rootPath, IEnumerable<string> exclusionRules)
         {
             return GetAllAllowedFilesInfo(rootPath, exclusionRules)
