@@ -16,8 +16,13 @@ namespace DeploymentTool.Core.Filesystem.Tests
         [TestMethod()]
         public void GetFilesystemStateDiffTest()
         {
-            string folder = @"C:\Users\super\Desktop\Test";
-            string filename = Path.Combine(folder, @"test.txt");
+            string folder = Path.Combine(Path.GetTempPath(), "DeploymentToolTesting");
+            string filename = Path.Combine(folder, "test.txt");
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
 
             File.Delete(filename);
 
@@ -28,7 +33,7 @@ namespace DeploymentTool.Core.Filesystem.Tests
             GetFilesystemStateDiffTestAsserts(diff, 0, 0, 0);
 
             /////////////////////////////////////////////
-            
+
             state1 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
             using (File.Create(filename)) { }
             state2 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
@@ -37,7 +42,7 @@ namespace DeploymentTool.Core.Filesystem.Tests
             GetFilesystemStateDiffTestAsserts(diff, 1, 0, 0);
 
             /////////////////////////////////////////////
-            
+
             state1 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
             File.WriteAllText(filename, "test");
             state2 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
@@ -46,7 +51,7 @@ namespace DeploymentTool.Core.Filesystem.Tests
             GetFilesystemStateDiffTestAsserts(diff, 0, 1, 0);
 
             /////////////////////////////////////////////
-            
+
             state1 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
             File.Delete(filename);
             state2 = FilesystemStateModel.GetFullFolderFilesystemState(folder, null);
@@ -61,7 +66,5 @@ namespace DeploymentTool.Core.Filesystem.Tests
             Assert.AreEqual(diff.ModifiedFiles.Length, modified);
             Assert.AreEqual(diff.RemovedFiles.Length, removed);
         }
-
-
     }
 }

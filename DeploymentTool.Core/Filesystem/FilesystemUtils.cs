@@ -50,7 +50,7 @@ namespace DeploymentTool.Core.Filesystem
 
             if (exclusionRules == null)
                 exclusionRules = new string[0];
-            
+
             string[] files = Directory.GetFiles(directoryPath);
 
             //add to result all non-excluded files
@@ -92,7 +92,7 @@ namespace DeploymentTool.Core.Filesystem
         public static FileSystemInfo[] GetAllFilesAndDirectories(string rootPath, bool recursively = true)
         {
             string searchPattern = "*";
-            
+
             SearchOption option = recursively
                 ? SearchOption.AllDirectories
                 : SearchOption.TopDirectoryOnly;
@@ -132,10 +132,17 @@ namespace DeploymentTool.Core.Filesystem
         {
             using (var md5 = MD5.Create())
             {
-                using (var stream = File.OpenRead(filename))
+                try
                 {
-                    var hash = md5.ComputeHash(stream);
-                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    using (var stream = File.OpenRead(filename))
+                    {
+                        var hash = md5.ComputeHash(stream);
+                        return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    }
+                }
+                catch
+                {
+                    return null;
                 }
             }
         }
