@@ -7,3 +7,7 @@
 /DeploymentTool.CoreTests/bin
 /DeploymentTool.CoreTests/obj
 /packages/
+/DeploymentTool.APITests/bin
+/DeploymentTool.APITests/obj
+/DeploymentTool.API/bin
+/DeploymentTool.API/obj

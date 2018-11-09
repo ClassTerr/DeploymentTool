@@ -13,47 +13,93 @@ namespace DeploymentTool.API.Services
     {
         private static readonly string BackupFolder = Path.GetFullPath("Backups");
 
-        public static List<string> CreateBackup(Profile profile, FilesystemDifference difference)
+        public static BackupResult CreateBackup(ClientProfile profile, FilesystemDifference difference)
         {
-            var errors = new List<string>();
             if (difference.CreatedFiles.Length +
                 difference.ModifiedFiles.Length +
                 difference.RemovedFiles.Length == 0)
             {
-                return errors;
+                return null;
             }
+
+            var backupFolderPath = InitBackupFolder(profile);
+            var profilePath = FilesystemUtils.NormalizePath(profile.RootFolder);
+            var logFileName = Path.Combine(backupFolderPath, "Log.txt");
+            var revertFileName = Path.Combine(backupFolderPath, "rollback.dat");
+
+            BackupResult backupResult = new BackupResult()
+            {
+                Errors = new List<string>(),
+                BackupFolder = backupFolderPath
+            };
 
             try
             {
-                var backupFolderPath = InitBackupFolder(profile);
-
-                foreach (var item in difference.RemovedFiles.Union(difference.ModifiedFiles))
+                using (var logWriter = new StreamWriter(logFileName))
                 {
-                    var filePath = Path.Combine(profile.RootFolder, item.Filename);
-                    if (File.Exists(filePath))
-                    {
-                        var fileDirectory = Path.GetDirectoryName(filePath);
-                        var filename = Path.GetFileName(filePath);
-                        var backupFileDirectory = Path.Combine(backupFolderPath, fileDirectory);
-                        var targetFilePath = Path.Combine(backupFileDirectory, filename);
+                    logWriter.Write(logFileName, "Backup Initialized: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\n");
+                    logWriter.WriteLine("CreatedFiles: " + difference.CreatedFiles.Length);
+                    logWriter.WriteLine("ModifiedFiles: " + difference.ModifiedFiles.Length);
+                    logWriter.WriteLine("RemovedFiles: " + difference.RemovedFiles.Length);
 
-                        FilesystemUtils.CreateDirectory(backupFileDirectory);
-                        try
+                    GenerateRollback(revertFileName, difference);
+
+                    foreach (var item in difference.RemovedFiles.Union(difference.ModifiedFiles))
+                    {
+                        var filePath = Path.Combine(profile.RootFolder, item.Filename);
+                        if (File.Exists(filePath))
                         {
-                            File.Copy(filePath, targetFilePath);
+                            var filename = Path.GetFileName(filePath);
+                            var fileRelativeDirectory = Path.GetDirectoryName(item.Filename);
+                            var backupFileDirectory = Path.Combine(backupFolderPath, fileRelativeDirectory);
+                            var targetFilePath = Path.Combine(backupFileDirectory, filename);
+
+                            FilesystemUtils.CreateDirectory(backupFileDirectory);
+                            try
+                            {
+                                File.Copy(filePath, targetFilePath);
+                            }
+                            catch (Exception e)
+                            {
+                                var error = $"Errors occured when attempt to backup file {filename} form {filePath} to {targetFilePath}\r\n exception: {e}";
+                                backupResult.Errors.Add(error);
+                                logWriter.Write(error);
+                            }
                         }
-                        catch (Exception e)
+                        else
                         {
-                            errors.Add($"Errors occured when attempt to backup file {filename} form {filePath} to {targetFilePath}\r\n exception: {e}");
+                            var error = $"Can not find file {filePath}";
+                            backupResult.Errors.Add(error);
+                            logWriter.Write(error);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                errors.Add($"Critical exception has occured: {ex}");
+                backupResult.Errors.Add($"Critical exception has occured: {ex}");
             }
-            return errors;
+            return backupResult;
+        }
+
+        private static void GenerateRollback(string revertFileName, FilesystemDifference difference)
+        {
+            using (var revertWriter = new StreamWriter(revertFileName))
+            {
+
+                revertWriter.WriteLine("#CreatedFiles#");
+                revertWriter.WriteLine(string.Join(Environment.NewLine, difference.CreatedFiles.Select(x => x.Filename)));
+                revertWriter.WriteLine();
+
+
+                revertWriter.WriteLine("#ModifiedFiles#");
+                revertWriter.WriteLine(string.Join(Environment.NewLine, difference.ModifiedFiles.Select(x => x.Filename)));
+                revertWriter.WriteLine();
+
+
+                revertWriter.WriteLine("#RemovedFiles#");
+                revertWriter.WriteLine(string.Join(Environment.NewLine, difference.RemovedFiles.Select(x => x.Filename)));
+            }
         }
 
         /// <summary>
@@ -61,8 +107,9 @@ namespace DeploymentTool.API.Services
         /// </summary>
         /// <param name="profile"></param>
         /// <returns>Name of created folder</returns>
-        public static string InitBackupFolder(Profile profile)
+        public static string InitBackupFolder(ClientProfile profile)
         {
+            //TODO ADD PROFILE BACKUP FOLDER
             var now = DateTime.Now;
 
             InitFolder(BackupFolder);
@@ -74,9 +121,6 @@ namespace DeploymentTool.API.Services
             string nowFolder = Path.Combine(todayFolder, now.ToString("HH-mm-ss"));
 
             InitFolder(nowFolder);
-
-            var logFileName = Path.Combine(todayFolder, "Log.txt");
-            File.WriteAllText(logFileName, "Backup Initialized: " + now.ToString() + "\n");
 
             return nowFolder;
         }

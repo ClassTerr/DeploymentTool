@@ -24,7 +24,7 @@ namespace DeploymentTool.Core.Models
 
         public DateTime SnapshotDateTime { get; set; }
 
-        public static FilesystemStateModel GetFullProfileFilesystemState(Profile profile)
+        public static FilesystemStateModel GetFullProfileFilesystemState(ClientProfile profile)
         {
             var rootPath = FilesystemUtils.NormalizePath(profile.RootFolder);
 

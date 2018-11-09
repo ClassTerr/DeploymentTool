@@ -19,10 +19,10 @@ namespace DeploymentTool
 
         public void UpdateProfilesComboBox()
         {
-            var prevSelectedID = (comboBoxProfiles.SelectedItem as Profile)?.ID;
+            var prevSelectedID = (comboBoxProfiles.SelectedItem as ClientProfile)?.ID;
             comboBoxProfiles.Items.Clear();
 
-            var profiles = SettingsManager.Instance.Profiles;
+            var profiles = SettingsManager<Settings>.Instance.Profiles;
 
             var newSelectionIndex = profiles.FindIndex(x => x.ID == prevSelectedID);
 
@@ -52,13 +52,13 @@ namespace DeploymentTool
         }
 
 
-        private Profile CurrentProfile
+        private ClientProfile CurrentProfile
         {
             get
             {
                 try
                 {
-                    return new Profile()
+                    return new ClientProfile()
                     {
                         ID = textBoxId.Text,
                         Name = textBoxName.Text,
@@ -96,24 +96,24 @@ namespace DeploymentTool
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SettingsManager.SaveConfig();
+            SettingsManager<Settings>.SaveConfig();
             Application.Exit();
         }
 
         private void ComboBoxProfiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CurrentProfile = comboBoxProfiles.SelectedItem as Profile;
+            CurrentProfile = comboBoxProfiles.SelectedItem as ClientProfile;
         }
 
 
         private void SaveButtonClick(object sender, EventArgs e)
         {
-            var profileId = (comboBoxProfiles.SelectedItem as Profile).ID;
+            var profileId = (comboBoxProfiles.SelectedItem as ClientProfile).ID;
             var curr = CurrentProfile;
 
             if (curr.ID != profileId)
             {
-                if (SettingsManager.Instance.GetProfile(curr.ID) != null)
+                if (SettingsManager<Settings>.Instance.GetProfile(curr.ID) != null)
                 {
                     MessageBox.Show("Profile with the same id already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     textBoxId.Focus();
@@ -121,20 +121,20 @@ namespace DeploymentTool
                 }
             }
 
-            SettingsManager.Instance.UpdateProfile(CurrentProfile, profileId);
-            SettingsManager.SaveConfig();
+            SettingsManager<Settings>.Instance.UpdateProfile(CurrentProfile, profileId);
+            SettingsManager<Settings>.SaveConfig();
             UpdateProfilesComboBox();
         }
 
         private void ButtonAddProfile_Click(object sender, EventArgs e)
         {
-            Profile profile = new Profile()
+            ClientProfile profile = new ClientProfile()
             {
                 Name = "New profile"
             };
 
-            SettingsManager.Instance.Profiles.Add(profile);
-            SettingsManager.SaveConfig();
+            SettingsManager<Settings>.Instance.Profiles.Add(profile);
+            SettingsManager<Settings>.SaveConfig();
 
             UpdateProfilesComboBox();
 
@@ -144,8 +144,8 @@ namespace DeploymentTool
 
         private void ButtonDeleteProfile_Click(object sender, EventArgs e)
         {
-            var prevSelected = (comboBoxProfiles.SelectedItem as Profile);
-            if (comboBoxProfiles.SelectedItem == null || comboBoxProfiles.SelectedItem as Profile == null)
+            var prevSelected = (comboBoxProfiles.SelectedItem as ClientProfile);
+            if (comboBoxProfiles.SelectedItem == null || comboBoxProfiles.SelectedItem as ClientProfile == null)
             {
                 MessageBox.Show("Please select something!");
                 return;
@@ -160,8 +160,8 @@ namespace DeploymentTool
             if (MessageBox.Show($"Are you sure want to remove profile: {prevSelectedName}?",
                 "Conformation", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
             {
-                SettingsManager.Instance.RemoveProfile(prevSelected.ID);
-                SettingsManager.SaveConfig();
+                SettingsManager<Settings>.Instance.RemoveProfile(prevSelected.ID);
+                SettingsManager<Settings>.SaveConfig();
                 UpdateProfilesComboBox();
             }
         }
@@ -177,7 +177,7 @@ namespace DeploymentTool
 
         private void RestoreButton_Click(object sender, EventArgs e)
         {
-            CurrentProfile = comboBoxProfiles.SelectedItem as Profile;
+            CurrentProfile = comboBoxProfiles.SelectedItem as ClientProfile;
         }
 
         private void ButtonSelectRootFolder_Click(object sender, EventArgs e)

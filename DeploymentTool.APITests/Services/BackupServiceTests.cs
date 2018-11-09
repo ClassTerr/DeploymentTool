@@ -19,29 +19,39 @@ namespace DeploymentTool.API.Services.Tests
         {
             
             string folder = Path.Combine(Path.GetTempPath(), "DeploymentToolTesting");
-            string filename = Path.Combine(folder, "test.txt");
 
             if (!Directory.Exists(folder))  
             {
                 Directory.CreateDirectory(folder);
             }
 
-            File.Delete(filename);
-
-            Profile profile = new Profile()
+            ClientProfile profile = new ClientProfile()
             {
                 ID = "Test Profile",
                 RootFolder = folder
             };
+
+            folder = Path.Combine(folder, "test");
+            if (!Directory.Exists(folder))  
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            string filename = Path.Combine(folder, "test.txt");
+
+            File.Delete(filename);
+
             
             using (File.Create(filename)) { }
             var state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
             File.Delete(filename);
             var state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
 
+            using (File.Create(filename)) { }
             var diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
 
-            BackupService.CreateBackup(profile, diff);
+            var result = BackupService.CreateBackup(profile, diff);
+            Assert.AreEqual(result.Errors.Count, 0);
         }
     }
 }

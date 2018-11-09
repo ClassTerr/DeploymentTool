@@ -27,7 +27,7 @@ namespace DeploymentTool.Core.Filesystem.Tests
 
             File.Delete(filename);
 
-            Profile profile = new Profile()
+            ClientProfile profile = new ClientProfile()
             {
                 ID = "Test Profile",
                 RootFolder = folder

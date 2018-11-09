@@ -20,7 +20,7 @@ namespace DeploymentTool.API.Controllers
         [HttpPost]
         public DeployInitResult Init(FilesystemStateModel clientFilesystemState)
         {
-            Profile profile = SettingsManager.Instance.GetProfile(clientFilesystemState.ProfileID);
+            ClientProfile profile = SettingsManager<Settings>.Instance.GetProfile(clientFilesystemState.ProfileID);
             if (profile == null)
             {
                 ResponseMessage(new HttpResponseMessage(HttpStatusCode.BadRequest));

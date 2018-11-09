@@ -55,6 +55,7 @@
       <DependentUpon>FilesystemMultiselectTreeView.cs</DependentUpon>
     </Compile>
     <Compile Include="ExclusionRules.cs" />
+    <Compile Include="Models\BackupResult.cs" />
     <Compile Include="Models\FilesystemStateModel.cs" />
     <Compile Include="Filesystem\FilesystemUtils.cs" />
     <Compile Include="Helpers\IconHelper.cs" />

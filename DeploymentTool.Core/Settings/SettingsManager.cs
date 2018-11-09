@@ -9,11 +9,11 @@ using System.Xml.Serialization;
 
 namespace DeploymentTool.Core.Settings
 {
-    public class SettingsManager
+    public class SettingsManager<T> where T : class
     {
-        private static Settings instance = null;
+        private static T instance = null;
         
-        public static Settings Instance
+        public static T Instance
         {
             get
             {
@@ -45,23 +45,23 @@ namespace DeploymentTool.Core.Settings
             }
         }
 
-        public static void LoadConfig()
+        private static void LoadConfig()
         {
             FileInfo fi = new FileInfo(ConfigFilePath);
             if (fi.Exists)
             {
-                XmlSerializer mySerializer = new XmlSerializer(typeof(Settings));
+                XmlSerializer mySerializer = new XmlSerializer(typeof(T));
                 StreamReader myXmlReader = new StreamReader(ConfigFilePath);
                 try
                 {
 
-                    instance = (Settings)mySerializer.Deserialize(myXmlReader);
+                    instance = (T)mySerializer.Deserialize(myXmlReader);
                     myXmlReader.Close();
                 }
                 catch (Exception e)
                 {
-                    instance = new Settings();
-                    MessageBox.Show("Ошибка сериализации LoadConfig\n" + e.Message);
+                    instance = (T)Activator.CreateInstance(typeof(T));
+                    MessageBox.Show("LoadConfig Error\n" + e.Message);
                 }
 
                 finally
@@ -71,14 +71,14 @@ namespace DeploymentTool.Core.Settings
             }
             else
             {
-                instance = new Settings();
+                instance = (T)Activator.CreateInstance(typeof(T));
                 SaveConfig();
             }
         }
 
         public static void SaveConfig()
         {
-            XmlSerializer mySerializer = new XmlSerializer(typeof(Settings));
+            XmlSerializer mySerializer = new XmlSerializer(typeof(T));
             StreamWriter myXmlWriter = new StreamWriter(ConfigFilePath);
             try
             {
@@ -86,7 +86,7 @@ namespace DeploymentTool.Core.Settings
             }
             catch (Exception e)
             {
-                MessageBox.Show("Ошибка сериализации SaveConfig\n" + e.Message);
+                MessageBox.Show("SaveConfig Error\n" + e.Message);
             }
             finally
             {

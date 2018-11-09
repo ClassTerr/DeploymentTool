@@ -18,7 +18,7 @@ namespace DeploymentTool
             Application.SetCompatibleTextRenderingDefault(false);
 
             string settingsPath = ConfigurationManager.AppSettings.Get("settingsFilePath");
-            SettingsManager.ConfigFilePath = settingsPath;
+            SettingsManager<Settings>.ConfigFilePath = settingsPath;
 
             Application.Run(new ProfilesManagerWindow());
         }
