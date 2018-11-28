@@ -1,13 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DeploymentTool.API.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeploymentTool.Core.Settings;
+﻿using DeploymentTool.Core.Models;
+using DeploymentTool.Settings;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using DeploymentTool.Core.Models;
 
 namespace DeploymentTool.API.Services.Tests
 {
@@ -25,7 +19,7 @@ namespace DeploymentTool.API.Services.Tests
                 Directory.CreateDirectory(folder);
             }
 
-            ClientProfile profile = new ClientProfile()
+            ServerProfile profile = new ServerProfile()
             {
                 ID = "Test Profile",
                 RootFolder = folder

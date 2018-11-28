@@ -1,13 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DeploymentTool.Core.Filesystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DeploymentTool.Core.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using DeploymentTool.Core.Models;
-using DeploymentTool.Core.Settings;
 
 namespace DeploymentTool.Core.Filesystem.Tests
 {
@@ -27,7 +20,7 @@ namespace DeploymentTool.Core.Filesystem.Tests
 
             File.Delete(filename);
 
-            ClientProfile profile = new ClientProfile()
+            ProfileBase profile = new ProfileBase()
             {
                 ID = "Test Profile",
                 RootFolder = folder

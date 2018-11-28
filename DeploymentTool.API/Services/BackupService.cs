@@ -1,11 +1,10 @@
 ﻿using DeploymentTool.Core.Filesystem;
 using DeploymentTool.Core.Models;
-using DeploymentTool.Core.Settings;
+using DeploymentTool.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 
 namespace DeploymentTool.API.Services
 {
@@ -13,7 +12,7 @@ namespace DeploymentTool.API.Services
     {
         private static readonly string BackupFolder = Path.GetFullPath("Backups");
 
-        public static BackupResult CreateBackup(ClientProfile profile, FilesystemDifference difference)
+        public static BackupResult CreateBackup(ServerProfile profile, FilesystemDifference difference)
         {
             if (difference.CreatedFiles.Length +
                 difference.ModifiedFiles.Length +
@@ -107,7 +106,7 @@ namespace DeploymentTool.API.Services
         /// </summary>
         /// <param name="profile"></param>
         /// <returns>Name of created folder</returns>
-        public static string InitBackupFolder(ClientProfile profile)
+        public static string InitBackupFolder(ServerProfile profile)
         {
             //TODO ADD PROFILE BACKUP FOLDER
             var now = DateTime.Now;

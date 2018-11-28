@@ -1,5 +1,5 @@
 using DeploymentTool.Core.Controls;
-using DeploymentTool.Core.Settings;
+using DeploymentTool.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace DeploymentTool
             var prevSelectedID = (comboBoxProfiles.SelectedItem as ClientProfile)?.ID;
             comboBoxProfiles.Items.Clear();
 
-            var profiles = SettingsManager<Settings>.Instance.Profiles;
+            var profiles = SettingsManager.Instance.Profiles;
 
             var newSelectionIndex = profiles.FindIndex(x => x.ID == prevSelectedID);
 
@@ -96,7 +96,7 @@ namespace DeploymentTool
 
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SettingsManager<Settings>.SaveConfig();
+            SettingsManager.SaveConfig();
             Application.Exit();
         }
 
@@ -113,7 +113,7 @@ namespace DeploymentTool
 
             if (curr.ID != profileId)
             {
-                if (SettingsManager<Settings>.Instance.GetProfile(curr.ID) != null)
+                if (SettingsManager.Instance.GetProfile(curr.ID) != null)
                 {
                     MessageBox.Show("Profile with the same id already exists!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     textBoxId.Focus();
@@ -121,8 +121,8 @@ namespace DeploymentTool
                 }
             }
 
-            SettingsManager<Settings>.Instance.UpdateProfile(CurrentProfile, profileId);
-            SettingsManager<Settings>.SaveConfig();
+            SettingsManager.Instance.UpdateProfile(CurrentProfile, profileId);
+            SettingsManager.SaveConfig();
             UpdateProfilesComboBox();
         }
 
@@ -133,8 +133,8 @@ namespace DeploymentTool
                 Name = "New profile"
             };
 
-            SettingsManager<Settings>.Instance.Profiles.Add(profile);
-            SettingsManager<Settings>.SaveConfig();
+            SettingsManager.Instance.Profiles.Add(profile);
+            SettingsManager.SaveConfig();
 
             UpdateProfilesComboBox();
 
@@ -160,8 +160,8 @@ namespace DeploymentTool
             if (MessageBox.Show($"Are you sure want to remove profile: {prevSelectedName}?",
                 "Conformation", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation) == DialogResult.OK)
             {
-                SettingsManager<Settings>.Instance.RemoveProfile(prevSelected.ID);
-                SettingsManager<Settings>.SaveConfig();
+                SettingsManager.Instance.RemoveProfile(prevSelected.ID);
+                SettingsManager.SaveConfig();
                 UpdateProfilesComboBox();
             }
         }

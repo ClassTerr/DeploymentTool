@@ -194,7 +194,9 @@
     <Compile Include="Models\DeployInitResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BackupService.cs" />
-    <Compile Include="Services\SiteSettings.cs" />
+    <Compile Include="Settings\ServerProfile.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SettingsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

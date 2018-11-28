@@ -1,5 +1,5 @@
 ﻿using DeploymentTool.Core.Models;
-using DeploymentTool.Core.Settings;
+using DeploymentTool.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace DeploymentTool.API.Controllers
         // GET: api/FilesystemState
         public FilesystemDifference Get(FilesystemStateModel clientFilesystemState)
         {
-            ClientProfile profile = SettingsManager<Settings>.Instance.GetProfile(clientFilesystemState.ProfileID);
+            ServerProfile profile = SettingsManager.Instance.GetProfile(clientFilesystemState.ProfileID);
             if (profile == null)
             {
                 ResponseMessage(new HttpResponseMessage(HttpStatusCode.BadRequest));

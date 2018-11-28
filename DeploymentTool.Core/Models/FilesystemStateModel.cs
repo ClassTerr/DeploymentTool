@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using DeploymentTool.Core.Filesystem;
 using DeploymentTool.Core.Models;
 using DeploymentTool.Core.Helpers;
-using DeploymentTool.Core.Settings;
 
 namespace DeploymentTool.Core.Models
 {
@@ -24,7 +23,7 @@ namespace DeploymentTool.Core.Models
 
         public DateTime SnapshotDateTime { get; set; }
 
-        public static FilesystemStateModel GetFullProfileFilesystemState(ClientProfile profile)
+        public static FilesystemStateModel GetFullProfileFilesystemState(ProfileBase profile)
         {
             var rootPath = FilesystemUtils.NormalizePath(profile.RootFolder);
 

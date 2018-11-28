@@ -1,7 +1,6 @@
-using DeploymentTool.Core.Settings;
+using DeploymentTool.Settings;
 using System;
 using System.Configuration;
-using System.IO;
 using System.Windows.Forms;
 
 namespace DeploymentTool
@@ -18,7 +17,7 @@ namespace DeploymentTool
             Application.SetCompatibleTextRenderingDefault(false);
 
             string settingsPath = ConfigurationManager.AppSettings.Get("settingsFilePath");
-            SettingsManager<Settings>.ConfigFilePath = settingsPath;
+            SettingsManager.ConfigFilePath = settingsPath;
 
             Application.Run(new ProfilesManagerWindow());
         }

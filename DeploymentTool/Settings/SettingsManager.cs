@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
-namespace DeploymentTool.Core.Settings
+namespace DeploymentTool.Settings
 {
-    public class SettingsManager<T> where T : class
+    public class SettingsManager
     {
-        private static T instance = null;
-        
-        public static T Instance
+        private static Settings instance = null;
+
+        public static Settings Instance
         {
             get
             {
@@ -50,17 +50,17 @@ namespace DeploymentTool.Core.Settings
             FileInfo fi = new FileInfo(ConfigFilePath);
             if (fi.Exists)
             {
-                XmlSerializer mySerializer = new XmlSerializer(typeof(T));
+                XmlSerializer mySerializer = new XmlSerializer(typeof(Settings));
                 StreamReader myXmlReader = new StreamReader(ConfigFilePath);
                 try
                 {
 
-                    instance = (T)mySerializer.Deserialize(myXmlReader);
+                    instance = (Settings)mySerializer.Deserialize(myXmlReader);
                     myXmlReader.Close();
                 }
                 catch (Exception e)
                 {
-                    instance = (T)Activator.CreateInstance(typeof(T));
+                    instance = (Settings)Activator.CreateInstance(typeof(Settings));
                     MessageBox.Show("LoadConfig Error\n" + e.Message);
                 }
 
@@ -71,14 +71,14 @@ namespace DeploymentTool.Core.Settings
             }
             else
             {
-                instance = (T)Activator.CreateInstance(typeof(T));
+                instance = (Settings)Activator.CreateInstance(typeof(Settings));
                 SaveConfig();
             }
         }
 
         public static void SaveConfig()
         {
-            XmlSerializer mySerializer = new XmlSerializer(typeof(T));
+            XmlSerializer mySerializer = new XmlSerializer(typeof(Settings));
             StreamWriter myXmlWriter = new StreamWriter(ConfigFilePath);
             try
             {
