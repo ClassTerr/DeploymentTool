@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DeploymentTool.Core.Models;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 
 namespace DeploymentTool.Settings
@@ -7,7 +9,19 @@ namespace DeploymentTool.Settings
     [Serializable]
     public class Settings
     {
+        public Settings()
+        {
+            BackupsFolder = ConfigurationManager.AppSettings.Get("backupsFolder");
+            DeploySessionFolder = ConfigurationManager.AppSettings.Get("deploySessionFolder");
+        }
+
         public List<ServerProfile> Profiles { get; set; } = new List<ServerProfile>();
+        public List<DeploySession> DeploySessions { get; set; } = new List<DeploySession>();
+        public List<Token> Tokens { get; set; } = new List<Token>();
+
+        public string BackupsFolder { get; set; }
+        public string DeploySessionFolder { get; set; }
+        public string AccessToken { get; set; }
 
         public ServerProfile GetProfile(string profileId)
         {

@@ -1,5 +1,9 @@
-﻿using System;
+﻿using DeploymentTool.Core.Models;
+using System;
+using System.Configuration;
 using System.IO;
+using System.Linq;
+using System.Web.Hosting;
 using System.Xml.Serialization;
 
 namespace DeploymentTool.Settings
@@ -8,13 +12,19 @@ namespace DeploymentTool.Settings
     {
         private static Settings instance = null;
 
+        public static void Initialize()
+        {
+            string settingsPath = ConfigurationManager.AppSettings.Get("settingsFilePath");
+            ConfigFilePath = HostingEnvironment.MapPath(settingsPath);
+        }
+
         public static Settings Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    LoadConfig();
+                    Initialize();
                 }
 
                 return instance;
@@ -42,16 +52,21 @@ namespace DeploymentTool.Settings
 
         private static void LoadConfig()
         {
-            FileInfo fi = new FileInfo(ConfigFilePath);
+            FileInfo fi = new FileInfo(ConfigFilePath ?? "~/config/settings.config");
             if (fi.Exists)
             {
                 XmlSerializer mySerializer = new XmlSerializer(typeof(Settings));
                 StreamReader myXmlReader = new StreamReader(ConfigFilePath);
                 try
                 {
-
                     instance = (Settings)mySerializer.Deserialize(myXmlReader);
                     myXmlReader.Close();
+
+                    if (!instance.Tokens.Any(x => !x.IsExpired))
+                    {
+                        instance.Tokens.Add(new Token() { Id = Guid.NewGuid().ToString(), ExpirationDate = DateTime.Now.AddMonths(1) });
+                        SaveConfig();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -71,9 +86,23 @@ namespace DeploymentTool.Settings
             }
         }
 
+        public void CreateSettingsInstance()
+        {
+            var instance = (Settings)Activator.CreateInstance(typeof(Settings));
+            var accessToken = ConfigurationManager.AppSettings.Get("accessToken");
+
+        }
+
         public static void SaveConfig()
         {
             XmlSerializer mySerializer = new XmlSerializer(typeof(Settings));
+
+            string configDirectory = Path.GetDirectoryName(ConfigFilePath);
+            if (!Directory.Exists(configDirectory))
+            {
+                Directory.CreateDirectory(configDirectory);
+            }
+
             StreamWriter myXmlWriter = new StreamWriter(ConfigFilePath);
             try
             {

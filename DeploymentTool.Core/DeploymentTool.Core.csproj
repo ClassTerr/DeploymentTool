@@ -56,12 +56,15 @@
     </Compile>
     <Compile Include="ExclusionRules.cs" />
     <Compile Include="Models\BackupResult.cs" />
+    <Compile Include="Models\DeploySession.cs" />
     <Compile Include="Models\FilesystemStateModel.cs" />
     <Compile Include="Filesystem\FilesystemUtils.cs" />
     <Compile Include="Helpers\IconHelper.cs" />
     <Compile Include="Models\FileDataModel.cs" />
     <Compile Include="Models\FilesystemDifference.cs" />
     <Compile Include="Models\ProfileBase.cs" />
+    <Compile Include="Models\Token.cs" />
+    <Compile Include="Models\TransferFileModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,13 +14,19 @@ namespace DeploymentTool.Settings
     {
         private static Settings instance = null;
 
+        public static void Initialize()
+        {
+            string settingsPath = ConfigurationManager.AppSettings.Get("settingsFilePath");
+            ConfigFilePath = settingsPath;
+        }
+
         public static Settings Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    LoadConfig();
+                    Initialize();
                 }
 
                 return instance;
@@ -79,7 +86,14 @@ namespace DeploymentTool.Settings
         public static void SaveConfig()
         {
             XmlSerializer mySerializer = new XmlSerializer(typeof(Settings));
-            StreamWriter myXmlWriter = new StreamWriter(ConfigFilePath);
+            var fileFullPath = Path.GetFullPath(ConfigFilePath);
+            string configDirectory = Path.GetDirectoryName(fileFullPath);
+            if (!Directory.Exists(configDirectory))
+            {
+                Directory.CreateDirectory(configDirectory);
+            }
+
+            StreamWriter myXmlWriter = new StreamWriter(fileFullPath);
             try
             {
                 mySerializer.Serialize(myXmlWriter, instance);

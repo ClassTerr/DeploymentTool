@@ -12,7 +12,7 @@ namespace DeploymentTool.API.Controllers
     public class FilesystemStateController : ApiController
     {
         // GET: api/FilesystemState
-        public FilesystemDifference Get(FilesystemStateModel clientFilesystemState)
+        public FilesystemDifference Get([FromBody]FilesystemStateModel clientFilesystemState)
         {
             ServerProfile profile = SettingsManager.Instance.GetProfile(clientFilesystemState.ProfileID);
             if (profile == null)
