@@ -17,6 +17,6 @@ namespace DeploymentTool.Core.Models
 
         public string RootFolder { get; set; }
 
-        public List<string> ExcludedPaths { get; set; }
+        public List<string> ExcludedPaths { get; set; } = new List<string>();
     }
 }

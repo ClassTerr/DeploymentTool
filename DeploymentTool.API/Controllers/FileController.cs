@@ -13,21 +13,7 @@ namespace DeploymentTool.API.Controllers
 {
     public class FileController : Controller
     {
-        // GET: File
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [TokenAuthorization]
-        public ActionResult Test()
-        {
-            ResponseHelper.Response("1111!!!", 303);
-            return Json("asd");
-        }
-
-        [HttpPost]
+        [HttpGet]
         [TokenAuthorization]
         public ActionResult Download()
         {
@@ -67,7 +53,6 @@ namespace DeploymentTool.API.Controllers
         {
             // you can upload file only in case of deploy session opened
             string deploySessionId = HttpContext.Request.Headers["DeploySessionId"];
-            string filepath = HttpContext.Request.Headers["Filepath"]; // relative
 
             var deploySession = DeploySessionService.GetDeploySession(deploySessionId);
 
@@ -83,40 +68,15 @@ namespace DeploymentTool.API.Controllers
                 return Content("Deploy session expired!");
             }
 
-            if (string.IsNullOrWhiteSpace(filepath))
-            {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Content("Filepath parameter is empty");
-            }
-
             var profile = ProfileService.GetProfileById(deploySession.ProfileId);
 
-            
-            string filename = Path.Combine(profile.RootFolder, filepath);
-
-            using (FileStream output = new FileStream(filename, FileMode.Create))
+            foreach (HttpPostedFileBase file in Request.Files)
             {
-                Request.InputStream.CopyTo(output);
+                string filename = Path.Combine(profile.RootFolder, file.FileName);//TODO in 
+                file.SaveAs(filename);
             }
 
-            return new HttpStatusCodeResult(HttpStatusCode.OK);
-        }
-
-
-        // POST: File/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            return Content("");
         }
     }
 }

@@ -10,5 +10,6 @@ namespace DeploymentTool.API.Models
     {
         public FilesystemDifference FilesystemDifference { get; set; }
         public string DeployID { get; set; }
+        public DateTime Expires { get; set; }
     }
 }

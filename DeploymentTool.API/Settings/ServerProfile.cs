@@ -11,6 +11,7 @@ namespace DeploymentTool.Settings
         public string UpadateAPISSH { get; set; }
         public List<BackupResult> Backups { get; set; }
         public string BackupFolder { get; set; }
+        public string DeployPreparationFolder { get; set; }
 
         public override string ToString()
         {

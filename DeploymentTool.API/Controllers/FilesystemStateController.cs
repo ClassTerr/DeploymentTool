@@ -1,51 +1,38 @@
-﻿using DeploymentTool.Core.Models;
+﻿using DeploymentTool.API.Models;
+using DeploymentTool.Core.Helpers;
+using DeploymentTool.Core.Models;
 using DeploymentTool.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Web.Http;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace DeploymentTool.API.Controllers
 {
-    public class FilesystemStateController : ApiController
+    public class FilesystemStateController : Controller
     {
-        // GET: api/FilesystemState
-        public FilesystemDifference Get([FromBody]FilesystemStateModel clientFilesystemState)
+        [HttpPost]
+        public async Task<string> GetFilesystemDifference()
         {
+            string requestData;
+            using (var reader = new StreamReader(HttpContext.Request.InputStream))
+            {
+                requestData = await reader.ReadToEndAsync();
+            }
+
+            var clientFilesystemState = requestData.ToObject<FilesystemStateModel>();
+
             ServerProfile profile = SettingsManager.Instance.GetProfile(clientFilesystemState.ProfileID);
             if (profile == null)
             {
-                ResponseMessage(new HttpResponseMessage(HttpStatusCode.BadRequest));
-                return null;
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return "Profile not found";
             }
 
             var serverState = FilesystemStateModel.GetFullProfileFilesystemState(profile);
             var diff = FilesystemStateModel.GetFilesystemStateDiff(serverState, clientFilesystemState);
-
-            return diff;
-        }
-
-        // GET: api/FilesystemState/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/FilesystemState
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT: api/FilesystemState/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/FilesystemState/5
-        public void Delete(int id)
-        {
+            
+            return diff.ToJSON();
         }
     }
 }
