@@ -19,25 +19,29 @@ namespace DeploymentTool.Core.Models
 
         public FileDataModel[] FileStates { get; set; }
         public string ProfileID { get; set; }
-        public DateTime CreatedUTC { get; set; }
+        public DateTime CreatedUTC { get; set; } = DateTime.UtcNow;
 
-        public DateTime SnapshotDateTime { get; set; }
-
-        public static FilesystemStateModel GetFullProfileFilesystemState(ProfileBase profile)
+        public static FilesystemStateModel GetProfileFilesystemState(ProfileBase profile)
         {
             var rootPath = FilesystemUtils.NormalizePath(profile.RootFolder);
+            return GetProfileFilesystemState(profile, rootPath);
+        }
 
+        public static FilesystemStateModel GetProfileFilesystemState(ProfileBase profile, string rootPath)
+        {
             var result = new FilesystemStateModel()
             {
                 ProfileID = profile.ID,
                 CreatedUTC = DateTime.UtcNow
             };
 
+            rootPath = FilesystemUtils.NormalizePath(rootPath);
+            
             FileDataModel[] fileDataModels = FilesystemUtils.GetAllAllowedFilesDataModel(rootPath, profile.ExcludedPaths);
             foreach (FileDataModel model in fileDataModels)
             {
                 var filename = FilesystemUtils.NormalizePath(model.Filename);
-                if (filename.StartsWith(rootPath))
+                if (filename.StartsWith(rootPath, StringComparison.InvariantCultureIgnoreCase))
                 {
                     model.Filename = filename.Substring(rootPath.Length)
                         .Trim(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
@@ -82,9 +86,9 @@ namespace DeploymentTool.Core.Models
 
             FilesystemDifference diff = new FilesystemDifference
             {
-                CreatedFiles = createdFiles.ToArray(),
-                RemovedFiles = removedFiles.ToArray(),
-                ModifiedFiles = modifiedFiles.ToArray()
+                CreatedFiles = createdFiles.ToList(),
+                RemovedFiles = removedFiles.ToList(),
+                ModifiedFiles = modifiedFiles.ToList()
             };
 
             return diff;

@@ -26,34 +26,34 @@ namespace DeploymentTool.Core.Filesystem.Tests
                 RootFolder = folder
             };
 
-            var state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
-            var state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            var state1 = FilesystemStateModel.GetProfileFilesystemState(profile);
+            var state2 = FilesystemStateModel.GetProfileFilesystemState(profile);
             var diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 0, 0, 0);
 
             /////////////////////////////////////////////
 
-            state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            state1 = FilesystemStateModel.GetProfileFilesystemState(profile);
             using (File.Create(filename)) { }
-            state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            state2 = FilesystemStateModel.GetProfileFilesystemState(profile);
 
             diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 1, 0, 0);
 
             /////////////////////////////////////////////
 
-            state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            state1 = FilesystemStateModel.GetProfileFilesystemState(profile);
             File.WriteAllText(filename, "test");
-            state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            state2 = FilesystemStateModel.GetProfileFilesystemState(profile);
 
             diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 0, 1, 0);
 
             /////////////////////////////////////////////
 
-            state1 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            state1 = FilesystemStateModel.GetProfileFilesystemState(profile);
             File.Delete(filename);
-            state2 = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            state2 = FilesystemStateModel.GetProfileFilesystemState(profile);
 
             diff = FilesystemStateModel.GetFilesystemStateDiff(state1, state2);
             GetFilesystemStateDiffTestAsserts(diff, 0, 0, 1);
@@ -61,9 +61,9 @@ namespace DeploymentTool.Core.Filesystem.Tests
         }
         public void GetFilesystemStateDiffTestAsserts(FilesystemDifference diff, int created, int modified, int removed)
         {
-            Assert.AreEqual(diff.CreatedFiles.Length, created);
-            Assert.AreEqual(diff.ModifiedFiles.Length, modified);
-            Assert.AreEqual(diff.RemovedFiles.Length, removed);
+            Assert.AreEqual(diff.CreatedFiles.Count, created);
+            Assert.AreEqual(diff.ModifiedFiles.Count, modified);
+            Assert.AreEqual(diff.RemovedFiles.Count, removed);
         }
     }
 }

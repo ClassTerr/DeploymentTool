@@ -9,9 +9,7 @@ namespace DeploymentTool.Settings
     {
         public string APICommand { get; set; }
         public string UpadateAPISSH { get; set; }
-        public List<BackupResult> Backups { get; set; }
-        public string BackupFolder { get; set; }
-        public string DeployPreparationFolder { get; set; }
+        public List<OperationResult> Backups { get; set; }
 
         public override string ToString()
         {

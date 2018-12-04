@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 
 namespace DeploymentTool.Settings
@@ -19,8 +20,8 @@ namespace DeploymentTool.Settings
         public List<DeploySession> DeploySessions { get; set; } = new List<DeploySession>();
         public List<Token> Tokens { get; set; } = new List<Token>();
 
-        public string BackupsFolder { get; set; }
-        public string DeploySessionFolder { get; set; }
+        public string BackupsFolder { get; set; } = Path.GetFullPath("Backups");
+        public string DeploySessionFolder { get; set; } = Path.GetFullPath("Deploys");
         public string AccessToken { get; set; }
 
         public ServerProfile GetProfile(string profileId)
@@ -53,6 +54,22 @@ namespace DeploymentTool.Settings
         {
             var index = Profiles.FindIndex(x => x.ID == Id);
             Profiles.RemoveAt(index);
+        }
+
+        public bool IsDeployingNow
+        {
+            get
+            {
+                return DeploySessions.Any(x => !x.IsDeployed);
+            }
+        }
+
+        public void StopDeploying()
+        {
+            foreach (var session in DeploySessions)
+            {
+                session.IsDeployed = true;
+            }
         }
     }
 }

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace DeploymentTool.Core.Models
 {
-    public class BackupResult
+    public class OperationResult
     {
-        public List<string> Errors { get; set; }
-        public string BackupFolder { get; set; }
+        public List<string> Errors { get; } = new List<string>();
 
         public bool IsSuccess
         {
@@ -17,6 +16,11 @@ namespace DeploymentTool.Core.Models
             {
                 return !Errors.Any();
             }
+        }
+
+        public override string ToString()
+        {
+            return String.Join(Environment.NewLine, Errors);
         }
     }
 }

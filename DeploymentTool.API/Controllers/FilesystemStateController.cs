@@ -29,7 +29,7 @@ namespace DeploymentTool.API.Controllers
                 return "Profile not found";
             }
 
-            var serverState = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            var serverState = FilesystemStateModel.GetProfileFilesystemState(profile);
             var diff = FilesystemStateModel.GetFilesystemStateDiff(serverState, clientFilesystemState);
             
             return diff.ToJSON();

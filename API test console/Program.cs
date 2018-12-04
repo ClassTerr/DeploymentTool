@@ -1,27 +1,17 @@
-﻿using DeploymentTool.Core.Helpers;
+﻿using DeploymentTool.API.Services;
+using DeploymentTool.Core.Helpers;
 using DeploymentTool.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace API_TEST_CONSOLE
 {
-    public class Product
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string Category { get; set; }
-    }
-
     class Program
     {
         private const string API_KEY = "f02d8f79-e99b-4e74-867f-5bfd52b93346";
@@ -151,14 +141,17 @@ namespace API_TEST_CONSOLE
 
         static void Main()
         {
-            ProfileBase profile = new ProfileBase()
+
+            DeploySessionService.DoDeploy("1");
+
+            /*ProfileBase profile = new ProfileBase()
             {
                 ID = "1",
                 RootFolder = @"C:\Test1"
             };
-            var state = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            var state = FilesystemStateModel.GetProfileFilesystemState(profile);*/
 
-            var diff = GetFilesystemDifference(state).GetAwaiter().GetResult();
+            //var diff = GetFilesystemDifference(state).GetAwaiter().GetResult();
             //var msg = Upload(@"C:\Users\super\Desktop\$this.Icon.ico").GetAwaiter().GetResult();
             //var msg = Upload(@"C:\Users\super\Desktop\$this.Icon.ico").GetAwaiter().GetResult();
             //RunAsync().GetAwaiter().GetResult();

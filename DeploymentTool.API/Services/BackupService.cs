@@ -2,7 +2,6 @@
 using DeploymentTool.Core.Models;
 using DeploymentTool.Settings;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -10,36 +9,29 @@ namespace DeploymentTool.API.Services
 {
     public static class BackupService
     {
-        private static readonly string BackupFolder = Path.GetFullPath("Backups");
-
-        public static BackupResult CreateBackup(ServerProfile profile, FilesystemDifference difference)
+        public static void CreateBackup(DeploySession session, FilesystemDifference difference)
         {
-            if (difference.CreatedFiles.Length +
-                difference.ModifiedFiles.Length +
-                difference.RemovedFiles.Length == 0)
+            var profile = ProfileService.GetProfileById(session.ProfileId);
+            if (difference.CreatedFiles.Count +
+                difference.ModifiedFiles.Count +
+                difference.RemovedFiles.Count == 0)
             {
-                return null;
+                return;
             }
 
-            var backupFolderPath = InitBackupFolder(profile);
+            var backupFolderPath = InitBackupFolder(session);
             var profilePath = FilesystemUtils.NormalizePath(profile.RootFolder);
             var logFileName = Path.Combine(backupFolderPath, "Log.txt");
             var revertFileName = Path.Combine(backupFolderPath, "rollback.dat");
-
-            BackupResult backupResult = new BackupResult()
-            {
-                Errors = new List<string>(),
-                BackupFolder = backupFolderPath
-            };
 
             try
             {
                 using (var logWriter = new StreamWriter(logFileName))
                 {
-                    logWriter.Write(logFileName, "Backup Initialized: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "\n");
-                    logWriter.WriteLine("CreatedFiles: " + difference.CreatedFiles.Length);
-                    logWriter.WriteLine("ModifiedFiles: " + difference.ModifiedFiles.Length);
-                    logWriter.WriteLine("RemovedFiles: " + difference.RemovedFiles.Length);
+                    logWriter.WriteLine("Backup Initialized: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                    logWriter.WriteLine("CreatedFiles: " + difference.CreatedFiles.Count);
+                    logWriter.WriteLine("ModifiedFiles: " + difference.ModifiedFiles.Count);
+                    logWriter.WriteLine("RemovedFiles: " + difference.RemovedFiles.Count);
 
                     GenerateRollback(revertFileName, difference);
 
@@ -61,28 +53,28 @@ namespace DeploymentTool.API.Services
                             catch (Exception e)
                             {
                                 var error = $"Errors occured when attempt to backup file {filename} form {filePath} to {targetFilePath}\r\n exception: {e}";
-                                backupResult.Errors.Add(error);
                                 logWriter.Write(error);
+                                throw new Exception(error);
                             }
                         }
                         else
                         {
                             var error = $"Can not find file {filePath}";
-                            backupResult.Errors.Add(error);
                             logWriter.Write(error);
+                            throw new Exception(error);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                backupResult.Errors.Add($"Critical exception has occured: {ex}");
+                throw new Exception($"Critical exception has occured: {ex}");
             }
-            return backupResult;
         }
 
-        private static void GenerateRollback(string revertFileName, FilesystemDifference difference)
+        public static void GenerateRollback(string backupFolder, FilesystemDifference difference)
         {
+            var revertFileName = Path.Combine(backupFolder, "rollback.dat");
             using (var revertWriter = new StreamWriter(revertFileName))
             {
 
@@ -101,35 +93,13 @@ namespace DeploymentTool.API.Services
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="profile"></param>
-        /// <returns>Name of created folder</returns>
-        public static string InitBackupFolder(ServerProfile profile)
+
+        public static string InitBackupFolder(DeploySession session)
         {
-            //TODO ADD PROFILE BACKUP FOLDER
-            var now = DateTime.Now;
+            string targetFolder = Path.Combine(SettingsManager.Instance.BackupsFolder, session.GetDirectoryName());
+            Directory.CreateDirectory(targetFolder);
 
-            InitFolder(BackupFolder);
-
-            string todayFolder = Path.Combine(BackupFolder, now.ToString("yyyy-MM-dd"));
-
-            InitFolder(todayFolder);
-
-            string nowFolder = Path.Combine(todayFolder, now.ToString("HH-mm-ss"));
-
-            InitFolder(nowFolder);
-
-            return nowFolder;
-        }
-
-        private static void InitFolder(string folderName)
-        {
-            if (!Directory.Exists(folderName))
-            {
-                Directory.CreateDirectory(folderName);
-            }
+            return targetFolder;
         }
     }
 }

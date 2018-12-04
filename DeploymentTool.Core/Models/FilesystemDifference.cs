@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeploymentTool.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace DeploymentTool.Core.Models
 {
     public class FilesystemDifference
     {
-        public FileDataModel[] CreatedFiles { get; set; }
+        public List<FileDataModel> CreatedFiles { get; set; } = new List<FileDataModel>();
+                                 
+        public List<FileDataModel> RemovedFiles { get; set; } = new List<FileDataModel>();
 
-        public FileDataModel[] RemovedFiles { get; set; }
-
-        public FileDataModel[] ModifiedFiles { get; set; }
+        public List<FileDataModel> ModifiedFiles { get; set; } = new List<FileDataModel>();
     }
 }

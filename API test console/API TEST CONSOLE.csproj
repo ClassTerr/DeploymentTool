@@ -61,6 +61,10 @@
       <Project>{FEA9FCE4-50BA-4926-B7EB-59D06E5423F8}</Project>
       <Name>DeploymentTool.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DeploymentTool.API\DeploymentTool.API.csproj">
+      <Project>{E69621A2-6EE8-4AD5-9EB0-00BF3BE4FE0C}</Project>
+      <Name>DeploymentTool.API</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

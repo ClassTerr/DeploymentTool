@@ -16,6 +16,12 @@ namespace DeploymentTool.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Init()
         {
+            if (SettingsManager.Instance.IsDeployingNow)
+            {
+                HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
+                return Content("Another deploy session is uploading now. If you sure that it is an error, please stop deployment process.");
+            }
+
             string requestData;
             using (var reader = new StreamReader(HttpContext.Request.InputStream))
             {
@@ -31,13 +37,24 @@ namespace DeploymentTool.API.Controllers
                 return Content("Profile not found");
             }
 
-            var serverState = FilesystemStateModel.GetFullProfileFilesystemState(profile);
+            var serverState = FilesystemStateModel.GetProfileFilesystemState(profile);
             var diff = FilesystemStateModel.GetFilesystemStateDiff(serverState, clientFilesystemState);
+
+            DeploySession session = new DeploySession()
+            {
+                ProfileName = profile.Name,
+                ProfileId = profile.ID,
+                FilesystemDifference = diff
+            };
+
+            SettingsManager.Instance.DeploySessions.Add(session);
+
+            //TODO
 
             DeployInitResult result = new DeployInitResult()
             {
                 FilesystemDifference = diff,
-                DeployID = "test"
+                DeployID = session.Id
             };
 
             return Json(result);

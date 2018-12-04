@@ -1,6 +1,7 @@
 ﻿using DeploymentTool.API.Helpers;
 using DeploymentTool.API.Services;
 using DeploymentTool.Core.Models;
+using DeploymentTool.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -72,7 +73,7 @@ namespace DeploymentTool.API.Controllers
 
             foreach (HttpPostedFileBase file in Request.Files)
             {
-                string filename = Path.Combine(profile.RootFolder, file.FileName);//TODO in 
+                string filename = Path.Combine(SettingsManager.Instance.DeploySessionFolder, file.FileName);//TODO in 
                 file.SaveAs(filename);
             }
 
