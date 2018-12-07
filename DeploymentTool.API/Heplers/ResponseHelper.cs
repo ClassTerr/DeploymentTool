@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using DeploymentTool.Core.Helpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace DeploymentTool.API.Helpers
@@ -36,6 +38,28 @@ namespace DeploymentTool.API.Helpers
             HttpContext.Current.Response.AppendHeader("Content-Encoding", "gzip");
             HttpContext.Current.Response.ContentType = "application/json";
             HttpContext.Current.Response.End();
+        }
+
+        public static T GetInputData<T>(HttpContextBase context)
+        {
+            string requestData;
+            using (var reader = new StreamReader(context.Request.InputStream))
+            {
+                requestData = reader.ReadToEnd();
+            }
+
+            return requestData.ToObject<T>();
+        }
+
+        public static async Task<T> GetInputDataAsync<T>(HttpContextBase context)
+        {
+            string requestData;
+            using (var reader = new StreamReader(context.Request.InputStream))
+            {
+                requestData = await reader.ReadToEndAsync();
+            }
+
+            return requestData.ToObject<T>();
         }
     }
 }
