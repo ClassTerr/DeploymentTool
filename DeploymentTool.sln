@@ -10,16 +10,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentTool", "Deploymen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentTool.Core", "DeploymentTool.Core\DeploymentTool.Core.csproj", "{FEA9FCE4-50BA-4926-B7EB-59D06E5423F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentTool.CoreTests", "DeploymentTool.CoreTests\DeploymentTool.CoreTests.csproj", "{74C9F1F9-C1EA-43FA-8EF4-05C56F1ED91B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentTool.API", "DeploymentTool.API\DeploymentTool.API.csproj", "{E69621A2-6EE8-4AD5-9EB0-00BF3BE4FE0C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FEA9FCE4-50BA-4926-B7EB-59D06E5423F8} = {FEA9FCE4-50BA-4926-B7EB-59D06E5423F8}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentTool.APITests", "DeploymentTool.APITests\DeploymentTool.APITests.csproj", "{14AB5601-C9E1-4396-997F-B23E77D626B2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API test console", "API test console\API TEST CONSOLE.csproj", "{CB91FE0D-0083-420A-9C66-6A9403DA1DF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API TEST CONSOLE", "API test console\API TEST CONSOLE.csproj", "{CB91FE0D-0083-420A-9C66-6A9403DA1DF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,18 +31,10 @@ Global
 		{FEA9FCE4-50BA-4926-B7EB-59D06E5423F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEA9FCE4-50BA-4926-B7EB-59D06E5423F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEA9FCE4-50BA-4926-B7EB-59D06E5423F8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74C9F1F9-C1EA-43FA-8EF4-05C56F1ED91B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74C9F1F9-C1EA-43FA-8EF4-05C56F1ED91B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74C9F1F9-C1EA-43FA-8EF4-05C56F1ED91B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74C9F1F9-C1EA-43FA-8EF4-05C56F1ED91B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E69621A2-6EE8-4AD5-9EB0-00BF3BE4FE0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E69621A2-6EE8-4AD5-9EB0-00BF3BE4FE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E69621A2-6EE8-4AD5-9EB0-00BF3BE4FE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E69621A2-6EE8-4AD5-9EB0-00BF3BE4FE0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14AB5601-C9E1-4396-997F-B23E77D626B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14AB5601-C9E1-4396-997F-B23E77D626B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14AB5601-C9E1-4396-997F-B23E77D626B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14AB5601-C9E1-4396-997F-B23E77D626B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB91FE0D-0083-420A-9C66-6A9403DA1DF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB91FE0D-0083-420A-9C66-6A9403DA1DF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB91FE0D-0083-420A-9C66-6A9403DA1DF2}.Release|Any CPU.ActiveCfg = Release|Any CPU

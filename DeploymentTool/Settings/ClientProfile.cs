@@ -11,8 +11,8 @@ namespace DeploymentTool.Settings
     [XmlRoot(ElementName = "Profile")]
     public class ClientProfile : ProfileBase
     {
-        public string APICommand { get; set; }
-        public string UpadateAPISSH { get; set; }
+        public string URL { get; set; }
+        public string APIToken { get; set; }
 
         public override string ToString()
         {

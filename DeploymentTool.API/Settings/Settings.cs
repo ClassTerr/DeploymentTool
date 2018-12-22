@@ -1,11 +1,12 @@
 ﻿using DeploymentTool.Core.Models;
+using DeploymentTool.Core.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 
-namespace DeploymentTool.Settings
+namespace DeploymentTool.API.Settings
 {
     [Serializable]
     public class Settings
@@ -60,15 +61,18 @@ namespace DeploymentTool.Settings
         {
             get
             {
-                return DeploySessions.Any(x => !x.IsDeployed);
+                return DeploySessions.Any(x => x.State == DeploySessionState.InProcess);
             }
         }
 
-        public void StopDeploying()
+        public void StopDeploying()// maybe won't be used
         {
             foreach (var session in DeploySessions)
             {
-                session.IsDeployed = true;
+                if (session.State == DeploySessionState.Opened)
+                {
+                    session.State = DeploySessionState.NotUsed;
+                }
             }
         }
     }

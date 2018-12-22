@@ -20,15 +20,19 @@ namespace DeploymentTool.Core.Models
         public FileDataModel[] FileStates { get; set; }
         public string ProfileID { get; set; }
         public DateTime CreatedUTC { get; set; } = DateTime.UtcNow;
-
-        public static FilesystemStateModel GetProfileFilesystemState(ProfileBase profile)
+        
+        public static FilesystemStateModel GetProfileFilesystemState(ProfileBase profile, string rootPath = null)
         {
-            var rootPath = FilesystemUtils.NormalizePath(profile.RootFolder);
-            return GetProfileFilesystemState(profile, rootPath);
-        }
+            if (profile == null)
+            {
+                throw new ArgumentNullException(nameof(profile));
+            }
 
-        public static FilesystemStateModel GetProfileFilesystemState(ProfileBase profile, string rootPath)
-        {
+            if (rootPath == null)
+            {
+                rootPath = FilesystemUtils.NormalizePath(profile.RootFolder);
+            }
+
             var result = new FilesystemStateModel()
             {
                 ProfileID = profile.ID,

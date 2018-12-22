@@ -9,7 +9,7 @@ namespace DeploymentTool.API.Models
     public class DeployInitResult
     {
         public FilesystemDifference FilesystemDifference { get; set; }
-        public string DeployID { get; set; }
+        public string DeploySessionID { get; set; }
         public DateTime Expires { get; set; }
     }
 }

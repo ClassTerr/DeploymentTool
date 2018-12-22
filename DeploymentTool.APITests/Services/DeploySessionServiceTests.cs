@@ -14,7 +14,7 @@ namespace DeploymentTool.API.Services.Tests
         [TestMethod()]
         public void DoDeployTest()
         {
-            DeploySessionService.DoDeploy("1");
+            DeploySessionService.Deploy("1");
             Assert.Fail();
         }
     }

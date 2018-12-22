@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace DeploymentTool.Settings
+namespace DeploymentTool.API.Settings
 {
     [XmlRoot(ElementName = "Profile")]
     public class ServerProfile : ProfileBase
     {
-        public string APICommand { get; set; }
+        public ServerProfile() { }
+        public ServerProfile(ProfileBase @base)
+        {
+            ID = @base.ID;
+            Name = @base.Name;
+            ExcludedPaths = @base.ExcludedPaths;
+        }
+        public string URL { get; set; }
         public string UpadateAPISSH { get; set; }
         public List<OperationResult> Backups { get; set; }
 

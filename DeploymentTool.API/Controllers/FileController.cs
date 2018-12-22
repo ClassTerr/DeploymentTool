@@ -1,11 +1,7 @@
 ﻿using DeploymentTool.API.Helpers;
 using DeploymentTool.API.Services;
-using DeploymentTool.Core.Models;
-using DeploymentTool.Settings;
-using System;
-using System.Collections.Generic;
+using DeploymentTool.API.Settings;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -14,6 +10,10 @@ namespace DeploymentTool.API.Controllers
 {
     public class FileController : Controller
     {
+        /// <summary>
+        /// Downloads file from live site
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [TokenAuthorization]
         public ActionResult Download()
@@ -48,6 +48,10 @@ namespace DeploymentTool.API.Controllers
             return File(fs, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
+        /// <summary>
+        /// Uploads file to deploy session preparation folder
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [TokenAuthorization]
         public ActionResult Upload()
@@ -71,13 +75,19 @@ namespace DeploymentTool.API.Controllers
 
             var profile = ProfileService.GetProfileById(deploySession.ProfileId);
 
-            foreach (HttpPostedFileBase file in Request.Files)
+            foreach (string fileName in Request.Files)
             {
-                string filename = Path.Combine(SettingsManager.Instance.DeploySessionFolder, file.FileName);//TODO in 
-                file.SaveAs(filename);
+                HttpPostedFileBase file = Request.Files[fileName];
+
+                string filePath = Path.Combine( SettingsManager.Instance.DeploySessionFolder,
+                                                deploySession.GetDirectoryName(),
+                                                file.FileName);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                file.SaveAs(filePath);
             }
 
-            return Content("");
+            return Content("Saved " + Request.Files.Count + " file(s)");
         }
     }
 }

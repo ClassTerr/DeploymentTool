@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeploymentTool.Core.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,18 +10,19 @@ namespace DeploymentTool.Core.Models
 {
     public class DeploySession
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string ProfileId { get; set; }
         public string ProfileName { get; set; }
-        public bool IsDeployed { get; set; } = false;
+        public DeploySessionState State { get; set; } = DeploySessionState.Opened;
         public FilesystemDifference FilesystemDifference { get; set; }
         public DateTime Expires => Created.Add(AliveTime);
         public DateTime Created { get; set; } = DateTime.Now;
-        public bool IsExpired => Expires < DateTime.Now || IsDeployed;
+        public bool IsExpired => Expires < DateTime.Now;
+        public bool IsClosed => IsExpired || State != DeploySessionState.Opened;
         
         public string GetDirectoryName()
         {
-            var name = Created.ToString() + " " + ProfileName + " " + Id;
+            var name = Created.ToString("yyyy-MM-dd HH-mm-ss") + " " + ProfileName + " " + Id;
 
             //replace all not allowed chars to '-'
             var notAllowedChars = new HashSet<char>(Path.GetInvalidFileNameChars());

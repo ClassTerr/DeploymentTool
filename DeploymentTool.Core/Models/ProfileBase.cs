@@ -18,5 +18,15 @@ namespace DeploymentTool.Core.Models
         public string RootFolder { get; set; }
 
         public List<string> ExcludedPaths { get; set; } = new List<string>();
+
+        public static explicit operator ProfileModel(ProfileBase serverProfile)
+        {
+            return new ProfileModel()
+            {
+                ExcludedPaths = serverProfile.ExcludedPaths,
+                ID = serverProfile.ID,
+                Name = serverProfile.Name
+            };
+        }
     }
 }

@@ -1,7 +1,6 @@
-﻿using DeploymentTool.API.Models;
+﻿using DeploymentTool.API.Settings;
 using DeploymentTool.Core.Helpers;
 using DeploymentTool.Core.Models;
-using DeploymentTool.Settings;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;

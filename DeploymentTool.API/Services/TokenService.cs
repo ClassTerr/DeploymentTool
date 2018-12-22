@@ -1,9 +1,6 @@
-﻿using DeploymentTool.Core.Models;
-using DeploymentTool.Settings;
-using System;
-using System.Collections.Generic;
+﻿using DeploymentTool.API.Settings;
+using DeploymentTool.Core.Models;
 using System.Linq;
-using System.Web;
 
 namespace DeploymentTool.API.Services
 {

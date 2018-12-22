@@ -1,148 +1,62 @@
-﻿using DeploymentTool.API.Services;
+﻿using DeploymentTool.Settings;
 using DeploymentTool.Core.Helpers;
-using DeploymentTool.Core.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API_TEST_CONSOLE
 {
     class Program
     {
-        private const string API_KEY = "f02d8f79-e99b-4e74-867f-5bfd52b93346";
-        private const string SITE_URL = "http://localhost:2222";
-        static async Task<string> Upload(string siteUrl, string deploySessionId, string filename, string targetFilename)
+        public static async Task TestAsync(string siteURL, string token)
         {
-            return await Upload(siteUrl, deploySessionId, new FileToUpload[] { new FileToUpload(filename, targetFilename) });
-        }
+            var profiles = await SynchAPI.FetchProfiles(siteURL, token);
 
-        static async Task<string> Upload(string siteUrl, string deploySessionId, IEnumerable<FileToUpload> filesToUpload)
-        {
-            if (string.IsNullOrWhiteSpace(siteUrl))
+            SettingsManager.Instance.Profiles = profiles;
+
+            foreach (var item in profiles)
             {
-                throw new ArgumentException("siteUrl must be non-empty", nameof(siteUrl));
+                item.RootFolder = @"C:\DeploymentTesting\Local"; // for testing
             }
 
-            if (string.IsNullOrWhiteSpace(deploySessionId))
+            SettingsManager.SaveConfig();
+
+            var profile = SettingsManager.Instance.Profiles[0];
+            var deployInitResult = await DeployAPI.Init(profile.ID);
+
+            Console.WriteLine(deployInitResult.ToJSON());
+
+            var diff = deployInitResult.FilesystemDifference;
+
+            //start files uploading
+            foreach (var fileDataModel in diff.CreatedFiles.Union(diff.ModifiedFiles))
             {
-                throw new ArgumentException("deploySessionId must be non-empty", nameof(deploySessionId));
+                //var filepath = Path.Combine(profile.RootFolder, fileDataModel.Filename); uncomment me
+                var filepath = Path.Combine(profile.RootFolder, fileDataModel.Filename);
+
+                var fileResponse = await FileAPI.Upload(profile.URL, profile.APIToken, deployInitResult.DeploySessionID, filepath, fileDataModel.Filename);
+                Console.WriteLine(fileResponse);
             }
 
-            if (filesToUpload == null)
-            {
-                throw new ArgumentNullException(nameof(filesToUpload));
-            }
+            //all files uploaded
 
-            string apiUrl = siteUrl + "/File/Upload";
+            //starting deployment
+            var deployResult = await DeployAPI.Deploy(deployInitResult.DeploySessionID);
+            Console.WriteLine(deployResult);
 
-            HttpClient client = new HttpClient();
+            //rollback changes
+            var rollbackResult = await DeployAPI.Rollback(deployInitResult.DeploySessionID);
+            Console.WriteLine(rollbackResult);
 
-            client.DefaultRequestHeaders.Add("Authorization", API_KEY);
-            client.DefaultRequestHeaders.Add("DeploySessionId", deploySessionId);
-
-            MultipartFormDataContent form = new MultipartFormDataContent();
-            foreach (var file in filesToUpload)
-            {
-
-                using (var stream = File.OpenRead(file.LocalFilename))
-                {
-                    HttpContent content = new StreamContent(stream);
-                    content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
-                    {
-                        Name = Path.GetFileName(file.TargetRelativeFilename),
-                        FileName = file.TargetRelativeFilename
-                    };
-
-                    form.Add(content);
-                }
-            }
-
-            HttpResponseMessage response = await client.PostAsync(apiUrl, form);
-            var result = await response.Content.ReadAsStringAsync();
-            return result;
-        }
-
-        static async Task DownloadFile(string siteUrl, string profileId, string filepath, string targetFilename)
-        {
-            Stream fileContent = await GetFile(siteUrl, profileId, filepath);
-            using (Stream file = File.Create(targetFilename))
-            {
-                await fileContent.CopyToAsync(file);
-            }
-        }
-
-        static async Task<Stream> GetFile(string siteUrl, string profileId, string filepath)
-        {
-            if (string.IsNullOrWhiteSpace(siteUrl))
-            {
-                throw new ArgumentException("siteUrl must be non-empty", nameof(siteUrl));
-            }
-
-            if (string.IsNullOrEmpty(profileId))
-            {
-                throw new ArgumentException("profileId must be non-empty", nameof(profileId));
-            }
-
-            if (string.IsNullOrEmpty(filepath))
-            {
-                throw new ArgumentException("filename must be non-empty", nameof(filepath));
-            }
-
-            string apiUrl = siteUrl + "/File/Download";
-
-            var request = WebRequest.Create(apiUrl);
-
-            request.Headers.Add("Authorization", API_KEY);
-            request.Headers.Add("ProfileId", profileId);
-            request.Headers.Add("Filepath", filepath);
-
-            request.Method = WebRequestMethods.Http.Get;
-
-            try
-            {
-                HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync();
-                return response.GetResponseStream();
-            }
-            catch (WebException ex)
-            {
-                HttpWebResponse response = (HttpWebResponse)ex.Response;
-                var responseStream = ex.Response.GetResponseStream();
-                var reader = new StreamReader(responseStream, Encoding.UTF8);
-                var exceptionMessage = await reader.ReadToEndAsync();
-                throw new Exception($"Unable to get file. {exceptionMessage} (Code {(int)response.StatusCode}: {response.StatusDescription}).");
-            }
-        }
-
-        static async Task<FilesystemDifference> GetFilesystemDifference(FilesystemStateModel clientFilesystemStateModel)
-        {
-            string apiUrl = SITE_URL + "/FilesystemState/GetFilesystemDifference";
-
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", API_KEY);
-
-            var content = new StringContent(clientFilesystemStateModel.ToJSON(), Encoding.UTF8, "application/json");
-            var result = await client.PostAsync(apiUrl, content);
-
-            var response = await result.Content.ReadAsStringAsync();
-            if (result.IsSuccessStatusCode)
-            {
-                return response.ToObject<FilesystemDifference>();
-            }
-            else
-            {
-                throw new Exception($"Unable to init deploy. {response} (Code {(int)result.StatusCode}: {result.StatusCode}).");
-            }
         }
 
         static void Main()
         {
+            TestAsync("http://localhost:2222", "f02d8f79-e99b-4e74-867f-5bfd52b93346").GetAwaiter().GetResult();
 
-            DeploySessionService.DoDeploy("1");
+
+            //DeploySessionService.Deploy("1");
 
             /*ProfileBase profile = new ProfileBase()
             {

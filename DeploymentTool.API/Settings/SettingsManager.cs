@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web.Hosting;
 using System.Xml.Serialization;
 
-namespace DeploymentTool.Settings
+namespace DeploymentTool.API.Settings
 {
     public class SettingsManager
     {

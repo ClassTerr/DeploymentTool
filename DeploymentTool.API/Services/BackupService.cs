@@ -1,7 +1,8 @@
-﻿using DeploymentTool.Core.Filesystem;
+﻿using DeploymentTool.API.Settings;
+using DeploymentTool.Core.Filesystem;
 using DeploymentTool.Core.Models;
-using DeploymentTool.Settings;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -19,7 +20,7 @@ namespace DeploymentTool.API.Services
                 return;
             }
 
-            var backupFolderPath = InitBackupFolder(session);
+            var backupFolderPath = InitBackupDirectory(session);
             var profilePath = FilesystemUtils.NormalizePath(profile.RootFolder);
             var logFileName = Path.Combine(backupFolderPath, "Log.txt");
             var revertFileName = Path.Combine(backupFolderPath, "rollback.dat");
@@ -33,7 +34,7 @@ namespace DeploymentTool.API.Services
                     logWriter.WriteLine("ModifiedFiles: " + difference.ModifiedFiles.Count);
                     logWriter.WriteLine("RemovedFiles: " + difference.RemovedFiles.Count);
 
-                    GenerateRollback(revertFileName, difference);
+                    GenerateRollbackScript(revertFileName, difference);
 
                     foreach (var item in difference.RemovedFiles.Union(difference.ModifiedFiles))
                     {
@@ -72,7 +73,7 @@ namespace DeploymentTool.API.Services
             }
         }
 
-        public static void GenerateRollback(string backupFolder, FilesystemDifference difference)
+        public static void GenerateRollbackScript(string backupFolder, FilesystemDifference difference)
         {
             var revertFileName = Path.Combine(backupFolder, "rollback.dat");
             using (var revertWriter = new StreamWriter(revertFileName))
@@ -93,13 +94,138 @@ namespace DeploymentTool.API.Services
             }
         }
 
+        public static string InitBackupDirectory(DeploySession session)
+        {
+            var targetFolder = GetSessionFullBackupDirectory(session);
+            Directory.CreateDirectory(targetFolder);
+            return targetFolder;
+        }
 
-        public static string InitBackupFolder(DeploySession session)
+        public static string GetSessionFullBackupDirectory(DeploySession session)
         {
             string targetFolder = Path.Combine(SettingsManager.Instance.BackupsFolder, session.GetDirectoryName());
-            Directory.CreateDirectory(targetFolder);
-
             return targetFolder;
+        }
+
+        public static void Rollback(DeploySession session)
+        {
+            var backupDir = GetSessionFullBackupDirectory(session);
+            if (!Directory.Exists(backupDir))
+            {
+                throw new DirectoryNotFoundException(backupDir);
+            }
+
+            var sessionDirectoryName = session.GetDirectoryName();
+
+            ServerProfile profile = ProfileService.GetProfileById(session.ProfileId);
+
+            string targetFolder = profile?.RootFolder;
+            string sourceFolder = Path.Combine(SettingsManager.Instance.BackupsFolder, sessionDirectoryName);
+            string backupFolder = Path.Combine(SettingsManager.Instance.DeploySessionFolder, sessionDirectoryName);
+
+            if (profile == null)
+            {
+                throw new Exception("Profile not valid");
+            }
+
+            if (!Directory.Exists(sourceFolder))
+            {
+                throw new DirectoryNotFoundException("There is no directory with deploying files: " + sourceFolder);
+            }
+
+            if (!Directory.Exists(targetFolder))
+            {
+                throw new DirectoryNotFoundException("There is no destination directory: " + targetFolder);
+            }
+
+            var rollbackFileName = Path.Combine(backupDir, "rollback.dat");
+            if (!File.Exists(rollbackFileName))
+            {
+                throw new FileNotFoundException("There is no directory with deploying files: " + rollbackFileName);
+            }
+
+            var rollbackLines = File.ReadAllLines(rollbackFileName);
+            var difference = GetRollbackDifference(rollbackLines);
+
+            //if some error will be occuerd we need to rollback
+            //so we write rollback script only for already processed files
+            //this variable will be changed in BackupService.MoveFiles method
+            FilesystemDifference realDifference = new FilesystemDifference();
+            
+            //revert filesystem state that was before deployment
+            MoveFiles(sourceFolder, targetFolder, backupFolder, difference, realDifference);
+        }
+
+        private static FilesystemDifference GetRollbackDifference(string[] rollbackLines)
+        {
+            FilesystemDifference difference = new FilesystemDifference();
+            List<FileDataModel> currentList = null;
+            for (int i = 0; i < rollbackLines.Length; i++)
+            {
+                var line = rollbackLines[i].Trim();
+                if (!string.IsNullOrEmpty(line))
+                {
+                    switch (line)
+                    {
+                        case "#CreatedFiles#":
+                            currentList = difference.CreatedFiles;
+                            continue;
+                        case "#ModifiedFiles#":
+                            currentList = difference.ModifiedFiles;
+                            continue;
+                        case "#RemovedFiles#":
+                            currentList = difference.RemovedFiles;
+                            continue;
+                    }
+
+                    currentList?.Add(new FileDataModel()
+                    {
+                        Filename = line
+                    });
+                }
+            }
+
+            return difference;
+        }
+
+        /// <summary>
+        /// Moves all files listed in difference 
+        /// </summary>
+        /// <param name="sourceFolder">Folder where stored prepared files</param>
+        /// <param name="targetFolder">Live site folder</param>
+        /// <param name="backupFolder">Replaced and deleted files from live will be moved here</param>
+        /// <param name="difference">Object that listed which files must be processed</param>
+        /// <param name="doneDifference">Output variable that listed files that have been already processed 
+        /// (if method throws exception here will be files that was moved before this exception was thrown)</param>
+        public static void MoveFiles(string sourceFolder, string targetFolder, string backupFolder, FilesystemDifference difference, FilesystemDifference doneDifference)
+        {
+            var filesToDeploy = difference.CreatedFiles.Union(difference.ModifiedFiles);
+
+            foreach (var item in filesToDeploy)
+            {
+                var sourceFilename = Path.Combine(sourceFolder, item.Filename);
+                var targetFilename = Path.Combine(targetFolder, item.Filename);
+                var backupFilename = Path.Combine(backupFolder, item.Filename);
+
+                if (File.Exists(targetFilename))
+                {
+                    File.Replace(sourceFilename, targetFilename, backupFilename);
+                    doneDifference.ModifiedFiles.Add(item);
+                }
+                else
+                {
+                    File.Move(sourceFilename, targetFilename);
+                    doneDifference.CreatedFiles.Add(item);
+                }
+            }
+
+            foreach (var item in difference.RemovedFiles)
+            {
+                var targetFilename = Path.Combine(targetFolder, item.Filename);
+                var backupFilename = Path.Combine(backupFolder, item.Filename);
+                File.Move(targetFilename, backupFilename);
+                doneDifference.RemovedFiles.Add(item);
+            }
         }
     }
 }

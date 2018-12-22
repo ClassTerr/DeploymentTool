@@ -62,7 +62,7 @@ namespace DeploymentTool
                     {
                         ID = textBoxId.Text,
                         Name = textBoxName.Text,
-                        APICommand = textBoxAPICommand.Text,
+                        URL = textBoxAPICommand.Text,
                         RootFolder = textBoxRootFolder.Text,
                         ExcludedPaths = textBoxExcludedPaths.Text.Split('\n').ToList()
                     };
@@ -87,7 +87,7 @@ namespace DeploymentTool
 
                 textBoxId.Text = value?.ID.ToString();
                 textBoxName.Text = value?.Name;
-                textBoxAPICommand.Text = value?.APICommand;
+                textBoxAPICommand.Text = value?.URL;
                 textBoxRootFolder.Text = value?.RootFolder;
                 textBoxExcludedPaths.Text = String.Join(Environment.NewLine, value?.ExcludedPaths ?? new List<string>());
             }
