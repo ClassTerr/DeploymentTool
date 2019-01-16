@@ -63,7 +63,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\Projects\DeploymentTool\DeploymentTool.Core\DeploymentTool.Core.csproj">
+    <ProjectReference Include="..\DeploymentTool.Core\DeploymentTool.Core.csproj">
       <Project>{FEA9FCE4-50BA-4926-B7EB-59D06E5423F8}</Project>
       <Name>DeploymentTool.Core</Name>
     </ProjectReference>

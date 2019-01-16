@@ -93,7 +93,7 @@ namespace DeploymentTool.Core.Controls
                     currentNode.Nodes.Add(node);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 currentNode.Nodes.Add("Unable to access");
             }
@@ -117,7 +117,7 @@ namespace DeploymentTool.Core.Controls
                         node.ImageKey = file;
                         node.SelectedImageKey = file;
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         node.ImageKey = "File.ico";
                         node.SelectedImageKey = "File.ico";
@@ -126,7 +126,7 @@ namespace DeploymentTool.Core.Controls
                     currentNode.Nodes.Add(node);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
         }

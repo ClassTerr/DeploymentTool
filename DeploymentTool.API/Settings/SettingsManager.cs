@@ -68,7 +68,7 @@ namespace DeploymentTool.API.Settings
                         SaveConfig();
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     instance = (Settings)Activator.CreateInstance(typeof(Settings));
                     //MessageBox.Show("LoadConfig Error\n" + e.Message);
@@ -108,7 +108,7 @@ namespace DeploymentTool.API.Settings
             {
                 mySerializer.Serialize(myXmlWriter, instance);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //MessageBox.Show("SaveConfig Error\n" + e.Message);
                 // TODO : Log error

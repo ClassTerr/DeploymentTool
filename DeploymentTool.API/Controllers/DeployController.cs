@@ -1,9 +1,9 @@
 ﻿using DeploymentTool.API.Helpers;
-using DeploymentTool.API.Models;
 using DeploymentTool.API.Services;
 using DeploymentTool.API.Settings;
 using DeploymentTool.Core.Models;
 using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -46,6 +46,11 @@ namespace DeploymentTool.API.Controllers
                 ProfileId = profile.ID,
                 FilesystemDifference = diff
             };
+
+            string filePath = Path.Combine(SettingsManager.Instance.DeploySessionFolder,
+                                            session.GetDirectoryName());
+
+            Directory.CreateDirectory(filePath);
 
             SettingsManager.Instance.DeploySessions.Add(session);
             SettingsManager.SaveConfig();
@@ -113,6 +118,12 @@ namespace DeploymentTool.API.Controllers
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 return Json(ex.Message);
             }
+        }
+
+        [HttpGet]
+        public ActionResult Index()
+        {
+            return Content("Hello");
         }
     }
 }

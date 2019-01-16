@@ -1,5 +1,4 @@
-﻿using DeploymentTool.API.Models;
-using DeploymentTool.Core.Helpers;
+﻿using DeploymentTool.Core.Helpers;
 using DeploymentTool.Core.Models;
 using DeploymentTool.Settings;
 using System;

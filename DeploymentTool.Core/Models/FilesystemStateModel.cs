@@ -30,7 +30,7 @@ namespace DeploymentTool.Core.Models
 
             if (rootPath == null)
             {
-                rootPath = FilesystemUtils.NormalizePath(profile.RootFolder);
+                rootPath = profile.RootFolder;
             }
 
             var result = new FilesystemStateModel()

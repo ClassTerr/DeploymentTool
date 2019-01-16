@@ -151,7 +151,7 @@ namespace DeploymentTool.API.Services
             //so we write rollback script only for already processed files
             //this variable will be changed in BackupService.MoveFiles method
             FilesystemDifference realDifference = new FilesystemDifference();
-            
+
             //revert filesystem state that was before deployment
             MoveFiles(sourceFolder, targetFolder, backupFolder, difference, realDifference);
         }
@@ -168,13 +168,13 @@ namespace DeploymentTool.API.Services
                     switch (line)
                     {
                         case "#CreatedFiles#":
-                            currentList = difference.CreatedFiles;
+                            currentList = difference.RemovedFiles;
                             continue;
                         case "#ModifiedFiles#":
                             currentList = difference.ModifiedFiles;
                             continue;
                         case "#RemovedFiles#":
-                            currentList = difference.RemovedFiles;
+                            currentList = difference.CreatedFiles;
                             continue;
                     }
 
@@ -209,11 +209,13 @@ namespace DeploymentTool.API.Services
 
                 if (File.Exists(targetFilename))
                 {
+                    Directory.CreateDirectory(Path.GetDirectoryName(backupFilename));
                     File.Replace(sourceFilename, targetFilename, backupFilename);
                     doneDifference.ModifiedFiles.Add(item);
                 }
                 else
                 {
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetFilename));
                     File.Move(sourceFilename, targetFilename);
                     doneDifference.CreatedFiles.Add(item);
                 }
@@ -223,6 +225,7 @@ namespace DeploymentTool.API.Services
             {
                 var targetFilename = Path.Combine(targetFolder, item.Filename);
                 var backupFilename = Path.Combine(backupFolder, item.Filename);
+                Directory.CreateDirectory(Path.GetDirectoryName(targetFilename));
                 File.Move(targetFilename, backupFilename);
                 doneDifference.RemovedFiles.Add(item);
             }

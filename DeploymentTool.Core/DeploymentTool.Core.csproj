@@ -61,6 +61,7 @@
     <Compile Include="Helpers\ObjectExtender.cs" />
     <Compile Include="Helpers\StringExtender.cs" />
     <Compile Include="Models\BackupResult.cs" />
+    <Compile Include="Models\DeployInitResult.cs" />
     <Compile Include="Models\DeploySession.cs" />
     <Compile Include="Models\Enums\DeploySessionState.cs" />
     <Compile Include="Models\FilesystemStateModel.cs" />

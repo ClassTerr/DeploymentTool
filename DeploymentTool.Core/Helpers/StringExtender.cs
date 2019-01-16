@@ -17,7 +17,14 @@ namespace DeploymentTool.Core.Helpers
 
         public static T ToObject<T>(this string str)
         {
-            return JsonConvert.DeserializeObject<T>(str);
+            try
+            {
+                return JsonConvert.DeserializeObject<T>(str);
+            }
+            catch
+            {
+                return (T)Convert.ChangeType(str, typeof(T));
+            }
         }
 
         public static bool IsPathEqualTo(this string path1, string path2)

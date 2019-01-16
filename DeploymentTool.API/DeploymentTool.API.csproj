@@ -193,7 +193,6 @@
     </Compile>
     <Compile Include="Heplers\ResponseHelper.cs" />
     <Compile Include="Heplers\TokenAuthorizationAttribute.cs" />
-    <Compile Include="Models\DeployInitResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\BackupService.cs" />
     <Compile Include="Services\DeploySessionService.cs" />

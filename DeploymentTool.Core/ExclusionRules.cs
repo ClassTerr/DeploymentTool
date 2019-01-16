@@ -17,7 +17,9 @@ namespace DeploymentTool.Core
         public static string ConvertToRegexp(string rule)
         {
             if (string.IsNullOrEmpty(rule))
-                return rule;
+            {
+                rule = "";
+            }
 
             rule = Regex.Escape(rule);
 

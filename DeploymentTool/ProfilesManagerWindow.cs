@@ -68,7 +68,7 @@ namespace DeploymentTool
                     };
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return null;
                 }

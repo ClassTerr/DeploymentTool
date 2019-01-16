@@ -20,9 +20,11 @@ namespace API_TEST_CONSOLE
                 item.RootFolder = @"C:\DeploymentTesting\Local"; // for testing
             }
 
+            var profile = SettingsManager.Instance.Profiles[0];
+            profile.APIToken = token;
+
             SettingsManager.SaveConfig();
 
-            var profile = SettingsManager.Instance.Profiles[0];
             var deployInitResult = await DeployAPI.Init(profile.ID);
 
             Console.WriteLine(deployInitResult.ToJSON());
@@ -42,11 +44,11 @@ namespace API_TEST_CONSOLE
             //all files uploaded
 
             //starting deployment
-            var deployResult = await DeployAPI.Deploy(deployInitResult.DeploySessionID);
+            var deployResult = await DeployAPI.Deploy(deployInitResult.DeploySessionID, profile.ID);
             Console.WriteLine(deployResult);
 
             //rollback changes
-            var rollbackResult = await DeployAPI.Rollback(deployInitResult.DeploySessionID);
+            var rollbackResult = await DeployAPI.Rollback(deployInitResult.DeploySessionID, profile.APIToken);
             Console.WriteLine(rollbackResult);
 
         }

@@ -1,6 +1,4 @@
-﻿using DeploymentTool.API.Models;
-using DeploymentTool.API.Services;
-using DeploymentTool.Core.Helpers;
+﻿using DeploymentTool.Core.Helpers;
 using DeploymentTool.Core.Models;
 using DeploymentTool.Settings;
 using System;
@@ -10,11 +8,11 @@ namespace API_TEST_CONSOLE
 {
     public class DeployAPI
     {
-        public static async Task<string> Rollback(string sessionId)
+        public static async Task<string> Rollback(string sessionId, string token)
         {
             string apiUrl = Globals.SITE_URL + "/Deploy/Rollback";
 
-            var result = await RequestHelper.PostAsync(apiUrl, sessionId);
+            var result = await RequestHelper.PostAsync(apiUrl, token, sessionId);
 
             var response = await result.Content.ReadAsStringAsync();
             if (result.IsSuccessStatusCode)
@@ -27,13 +25,12 @@ namespace API_TEST_CONSOLE
             }
         }
 
-        public static async Task<string> Deploy(string sessionId)
+        public static async Task<string> Deploy(string sessionId, string profileId)
         {
-            var session = DeploySessionService.GetDeploySession(sessionId);
-            var profile = ProfileService.GetProfileById(session.ProfileId);
+            var profile = SettingsManager.Instance.GetProfile(profileId);
             string apiUrl = profile.URL + "/Deploy/Deploy";
-            
-            var result = await RequestHelper.PostAsync(apiUrl, sessionId);
+
+            var result = await RequestHelper.PostAsync(apiUrl, profile.APIToken, sessionId);
 
             var response = await result.Content.ReadAsStringAsync();
             if (result.IsSuccessStatusCode)

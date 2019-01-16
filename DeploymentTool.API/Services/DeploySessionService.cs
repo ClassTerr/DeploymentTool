@@ -95,7 +95,7 @@ namespace DeploymentTool.API.Services
                     BackupService.GenerateRollbackScript(backupFolder, realDifference);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // if some errors occured while deploying - revert all changes
                 try
